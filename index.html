@@ -8,183 +8,260 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
-  --bg:#070b14;--surface:#0d1424;--surface2:#131d30;--surface3:#1a2640;
-  --border:#1e2e47;--border2:#243450;
-  --accent:#3b82f6;--accent2:#06b6d4;--accent3:#8b5cf6;
+  --bg:#06080f;--surface:#0e1120;--surface2:#141828;--surface3:#1c2235;
+  --border:#1e2640;--border2:#252f4a;
+  --accent:#7c3aed;--accent2:#a855f7;--accent3:#06b6d4;
   --gold:#f59e0b;--success:#10b981;--danger:#ef4444;--warning:#f97316;
+  --pink:#ec4899;--blue:#3b82f6;
   --text:#e2e8f0;--text-muted:#64748b;--text-dim:#94a3b8;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;direction:rtl}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(59,130,246,0.07) 0%,transparent 60%)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 0%,rgba(124,58,237,0.08) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%,rgba(168,85,247,0.06) 0%,transparent 50%),
+    radial-gradient(ellipse 40% 30% at 50% 50%,rgba(6,182,212,0.03) 0%,transparent 60%);
+}
 
+/* ===== SCREENS ===== */
 .screen{display:none;position:relative;z-index:1}
 .screen.active{display:flex}
 
-/* WELCOME */
-#welcomeScreen{min-height:100vh;align-items:center;justify-content:center;flex-direction:column;padding:24px}
-.welcome-box{background:var(--surface);border:1px solid var(--border2);border-radius:24px;padding:48px 40px;width:100%;max-width:420px;text-align:center;box-shadow:0 0 60px rgba(59,130,246,0.08);animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1)}
-@keyframes popIn{from{opacity:0;transform:scale(0.9) translateY(20px)}to{opacity:1;transform:none}}
-.welcome-logo{font-size:52px;margin-bottom:16px}
-.welcome-title{font-size:22px;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.welcome-sub{font-size:13px;color:var(--text-muted);margin-bottom:32px;line-height:1.6}
-.role-btns{display:flex;flex-direction:column;gap:12px}
-.role-btn{padding:16px;border-radius:14px;border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:14px;text-align:right}
-.role-btn:hover{border-color:var(--accent);background:rgba(59,130,246,0.08);transform:translateY(-2px)}
-.rb-icon{font-size:28px;flex-shrink:0}
-.rb-title{font-size:15px;font-weight:700}
-.rb-sub{font-size:12px;color:var(--text-muted);font-weight:400}
+/* ===== WELCOME ===== */
+#welcomeScreen{min-height:100vh;align-items:center;justify-content:center;padding:24px;flex-direction:column}
+.welcome-wrap{width:100%;max-width:460px}
+.welcome-advisor-card{
+  background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(168,85,247,0.1));
+  border:1px solid rgba(124,58,237,0.4);border-radius:20px;padding:28px;
+  text-align:center;margin-bottom:24px;position:relative;overflow:hidden;
+  animation:popIn 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+.welcome-advisor-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at center,rgba(124,58,237,0.1) 0%,transparent 60%);pointer-events:none}
+.wa-rank{font-size:11px;color:var(--accent2);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.wa-name{font-size:28px;font-weight:900;background:linear-gradient(135deg,#fff,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.wa-title{font-size:13px;color:var(--text-muted)}
+.wa-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);border-radius:20px;padding:4px 14px;font-size:12px;color:var(--gold);font-weight:700;margin-top:10px}
 
-/* LOGIN */
+.welcome-box{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:28px;animation:popIn 0.6s 0.1s both cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(0.9) translateY(20px)}to{opacity:1;transform:none}}
+.welcome-sub{font-size:13px;color:var(--text-muted);margin-bottom:20px;text-align:center}
+.role-btns{display:flex;flex-direction:column;gap:12px}
+.role-btn{padding:16px 20px;border-radius:14px;border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:14px;text-align:right}
+.role-btn.advisor-btn:hover{border-color:var(--accent);background:rgba(124,58,237,0.1);transform:translateY(-2px);box-shadow:0 8px 25px rgba(124,58,237,0.2)}
+.role-btn.student-btn:hover{border-color:var(--accent3);background:rgba(6,182,212,0.08);transform:translateY(-2px)}
+.rb-icon{font-size:26px;flex-shrink:0}
+.rb-title{font-size:14px;font-weight:700}
+.rb-sub{font-size:11px;color:var(--text-muted);font-weight:400;margin-top:2px}
+
+/* ===== LOGIN ===== */
 #loginScreen{min-height:100vh;align-items:center;justify-content:center;padding:24px}
-.login-box{background:var(--surface);border:1px solid var(--border2);border-radius:24px;padding:48px 40px;width:100%;max-width:400px;text-align:center;box-shadow:0 0 60px rgba(59,130,246,0.08);animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1)}
-.login-logo{font-size:48px;margin-bottom:16px}
-.login-title{font-size:22px;font-weight:800;margin-bottom:4px}
-.login-sub{font-size:13px;color:var(--text-muted);margin-bottom:32px}
-.login-input{width:100%;padding:14px 18px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:12px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:16px;text-align:center;letter-spacing:4px;margin-bottom:16px;outline:none;transition:all 0.2s}
-.login-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,0.12)}
-.login-btn{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent3));color:#fff;font-family:'Vazirmatn',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.3s}
-.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(59,130,246,0.35)}
+.login-box{background:var(--surface);border:1px solid var(--border2);border-radius:24px;padding:44px 36px;width:100%;max-width:380px;text-align:center;box-shadow:0 0 60px rgba(124,58,237,0.08);animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1)}
+.login-logo{font-size:44px;margin-bottom:12px}
+.login-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--text-muted);margin-bottom:28px}
+.login-input{width:100%;padding:13px 16px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:11px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:16px;text-align:center;letter-spacing:4px;margin-bottom:14px;outline:none;transition:all 0.2s}
+.login-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.15)}
+.login-btn{width:100%;padding:13px;border-radius:11px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'Vazirmatn',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(124,58,237,0.4)}
 .login-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
-.login-err{color:var(--danger);font-size:13px;margin-top:12px;display:none;padding:10px;background:rgba(239,68,68,0.08);border-radius:8px}
-.back-link{margin-top:16px;font-size:13px;color:var(--text-muted);cursor:pointer;display:inline-block}
+.login-err{color:var(--danger);font-size:12px;margin-top:10px;display:none;padding:9px;background:rgba(239,68,68,0.08);border-radius:8px}
+.back-link{margin-top:14px;font-size:12px;color:var(--text-muted);cursor:pointer;display:inline-block}
 .back-link:hover{color:var(--accent)}
 
-/* LOADING */
-.loading-overlay{position:fixed;inset:0;background:rgba(7,11,20,0.85);backdrop-filter:blur(6px);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+/* ===== PROFILE SETUP ===== */
+#profileScreen{min-height:100vh;align-items:center;justify-content:center;padding:24px}
+.profile-box{background:var(--surface);border:1px solid var(--border2);border-radius:24px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 0 60px rgba(124,58,237,0.1);animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1)}
+.profile-title{font-size:20px;font-weight:800;margin-bottom:4px;background:linear-gradient(135deg,var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.profile-sub{font-size:13px;color:var(--text-muted);margin-bottom:24px;line-height:1.6}
+.profile-name{font-size:24px;font-weight:900;color:var(--text);margin-bottom:4px}
+
+/* ===== LOADING ===== */
+.loading-overlay{position:fixed;inset:0;background:rgba(6,8,15,0.88);backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
 .loading-overlay.show{display:flex}
 .spinner{width:44px;height:44px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-size:14px;color:var(--text-muted)}
+.loading-text{font-size:13px;color:var(--text-muted)}
 
-/* HEADER */
+/* ===== HEADER ===== */
 #advisorApp,#studentApp{min-height:100vh;flex-direction:column}
-header{padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(7,11,20,0.85);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100;flex-shrink:0}
+header{padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(6,8,15,0.88);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100;flex-shrink:0}
 .logo{display:flex;align-items:center;gap:10px}
-.logo-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:linear-gradient(135deg,var(--accent),var(--accent3))}
-.logo-name{font-size:15px;font-weight:800;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.logo-role{font-size:11px;color:var(--text-muted)}
-nav{display:flex;gap:4px}
-.nav-btn{padding:7px 12px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--text-muted);font-family:'Vazirmatn',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s}
-.nav-btn.active{background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);color:var(--accent)}
+.logo-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.logo-name{font-size:14px;font-weight:800;background:linear-gradient(90deg,var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-role{font-size:10px;color:var(--text-muted)}
+nav{display:flex;gap:3px}
+.nav-btn{padding:6px 11px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--text-muted);font-family:'Vazirmatn',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s}
+.nav-btn.active{background:rgba(124,58,237,0.15);border-color:rgba(124,58,237,0.4);color:var(--accent2)}
 .nav-btn:hover:not(.active){color:var(--text);background:var(--surface2)}
-.logout-btn{padding:6px 12px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text-muted);font-family:'Vazirmatn',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s}
+.logout-btn{padding:5px 11px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text-muted);font-family:'Vazirmatn',sans-serif;font-size:11px;cursor:pointer;transition:all 0.2s}
 .logout-btn:hover{border-color:var(--danger);color:var(--danger)}
 
-/* MAIN */
-.main{max-width:980px;margin:0 auto;padding:28px 20px 60px;flex:1;width:100%}
+/* ===== MAIN ===== */
+.main{max-width:980px;margin:0 auto;padding:24px 20px 60px;flex:1;width:100%}
 .page-section{display:none}
 .page-section.active{display:block;animation:fadeUp 0.3s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-/* CARDS */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:18px}
-.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.card-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px}
-.ibox{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-.ib-blue{background:rgba(59,130,246,0.2)}.ib-cyan{background:rgba(6,182,212,0.2)}.ib-purple{background:rgba(139,92,246,0.2)}.ib-green{background:rgba(16,185,129,0.2)}.ib-gold{background:rgba(245,158,11,0.2)}
-.page-hdr{margin-bottom:24px}
-.page-hdr h1{font-size:20px;font-weight:800;margin-bottom:4px}
-.page-hdr p{font-size:13px;color:var(--text-muted)}
+/* ===== CARDS ===== */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.ibox{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.ib-purple{background:rgba(124,58,237,0.2)}.ib-cyan{background:rgba(6,182,212,0.2)}.ib-green{background:rgba(16,185,129,0.2)}.ib-gold{background:rgba(245,158,11,0.2)}.ib-pink{background:rgba(236,72,153,0.2)}.ib-blue{background:rgba(59,130,246,0.2)}.ib-red{background:rgba(239,68,68,0.2)}
+.page-hdr{margin-bottom:20px}
+.page-hdr h1{font-size:19px;font-weight:800;margin-bottom:3px}
+.page-hdr p{font-size:12px;color:var(--text-muted)}
 
-/* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center}
-.stat-num{font-size:26px;font-weight:900;margin-bottom:4px}
-.stat-lbl{font-size:11px;color:var(--text-muted)}
-.c-blue{color:var(--accent)}.c-cyan{color:var(--accent2)}.c-green{color:var(--success)}.c-gold{color:var(--gold)}.c-purple{color:var(--accent3)}
+/* ===== STATS ===== */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;transition:border-color 0.2s}
+.stat-card:hover{border-color:var(--border2)}
+.stat-num{font-size:24px;font-weight:900;margin-bottom:3px}
+.stat-lbl{font-size:10px;color:var(--text-muted)}
+.c-purple{color:var(--accent2)}.c-cyan{color:var(--accent3)}.c-green{color:var(--success)}.c-gold{color:var(--gold)}.c-pink{color:var(--pink)}.c-blue{color:var(--blue)}
 
-/* FORM */
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.form-group{display:flex;flex-direction:column;gap:7px}
+/* ===== FORM ===== */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:6px}
 .form-group.full{grid-column:1/-1}
-label{font-size:12px;color:var(--text-dim);font-weight:600}
-input,select,textarea{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:14px;outline:none;transition:all 0.2s;direction:rtl;width:100%}
-input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,0.12)}
+label{font-size:11px;color:var(--text-dim);font-weight:600;letter-spacing:0.3px}
+input,select,textarea{background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:10px 13px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:13px;outline:none;transition:all 0.2s;direction:rtl;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.12)}
 select option{background:var(--surface)}
 
-/* BUTTONS */
-.btn{padding:9px 18px;border-radius:10px;border:none;font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px}
-.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent3));color:#fff}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,130,246,0.3)}
+/* ===== BUTTONS ===== */
+.btn{padding:8px 16px;border-radius:9px;border:none;font-family:'Vazirmatn',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(124,58,237,0.35)}
 .btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text-dim)}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
 .btn-danger{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--danger)}
 .btn-success{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--success)}
-.btn-sm{padding:5px 12px;font-size:12px;border-radius:8px}
+.btn-gold{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--gold)}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:7px}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
 
-/* BADGE */
-.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
-.bg-green{background:rgba(16,185,129,0.15);color:var(--success)}.bg-red{background:rgba(239,68,68,0.15);color:var(--danger)}.bg-amber{background:rgba(245,158,11,0.15);color:var(--gold)}.bg-blue{background:rgba(59,130,246,0.15);color:var(--accent)}.bg-purple{background:rgba(139,92,246,0.15);color:var(--accent3)}.bg-cyan{background:rgba(6,182,212,0.15);color:var(--accent2)}
+/* ===== BADGE ===== */
+.badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
+.bg-green{background:rgba(16,185,129,0.15);color:var(--success)}.bg-red{background:rgba(239,68,68,0.15);color:var(--danger)}.bg-amber{background:rgba(245,158,11,0.15);color:var(--gold)}.bg-blue{background:rgba(59,130,246,0.15);color:var(--blue)}.bg-purple{background:rgba(124,58,237,0.15);color:var(--accent2)}.bg-cyan{background:rgba(6,182,212,0.15);color:var(--accent3)}.bg-pink{background:rgba(236,72,153,0.15);color:var(--pink)}
 
-/* TABLE */
+/* ===== TABLE ===== */
 .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
 table{width:100%;border-collapse:collapse}
-th{padding:11px 14px;text-align:right;font-size:12px;color:var(--text-muted);font-weight:600;background:var(--surface2);border-bottom:1px solid var(--border)}
-td{padding:11px 14px;text-align:right;font-size:13px;border-bottom:1px solid rgba(30,46,71,0.4)}
+th{padding:10px 14px;text-align:right;font-size:11px;color:var(--text-muted);font-weight:600;background:var(--surface2);border-bottom:1px solid var(--border)}
+td{padding:10px 14px;text-align:right;font-size:12px;border-bottom:1px solid rgba(30,38,64,0.4)}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(59,130,246,0.02)}
+tr:hover td{background:rgba(124,58,237,0.02)}
 
-/* REPORT ROWS */
-.report-row{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;cursor:pointer;transition:all 0.2s;margin-bottom:8px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+/* ===== REPORT ROW ===== */
+.report-row{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:12px 16px;cursor:pointer;transition:all 0.2s;margin-bottom:7px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .report-row:hover{border-color:var(--accent);transform:translateX(-3px)}
 
-/* STUDENT CARDS */
-.students-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
-.student-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
-.student-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent3));opacity:0;transition:opacity 0.2s}
-.student-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+/* ===== STUDENT CARDS ===== */
+.students-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.student-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:16px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.student-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity 0.2s}
+.student-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.3)}
 .student-card:hover::before{opacity:1}
-.code-tag{background:var(--surface3);border:1px solid var(--border2);border-radius:8px;padding:4px 10px;font-size:12px;color:var(--accent);font-family:monospace;letter-spacing:1px;cursor:pointer;transition:all 0.2s}
-.code-tag:hover{background:rgba(59,130,246,0.12)}
+.code-tag{background:var(--surface3);border:1px solid var(--border2);border-radius:7px;padding:3px 9px;font-size:11px;color:var(--accent2);font-family:monospace;letter-spacing:1px;cursor:pointer;transition:all 0.2s}
+.code-tag:hover{background:rgba(124,58,237,0.15)}
 
-/* LESSONS */
-.lessons-container{display:flex;flex-direction:column;gap:10px}
-.lesson-row{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:14px;position:relative;animation:slideR 0.2s ease}
+/* ===== SUBSCRIPTION STATUS ===== */
+.sub-active{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--success);display:inline-flex;align-items:center;gap:5px}
+.sub-expired{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--danger);display:inline-flex;align-items:center;gap:5px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.sub-warning{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--gold);display:inline-flex;align-items:center;gap:5px}
+
+/* ===== STUDENT DASHBOARD HERO ===== */
+.student-hero{
+  background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(6,182,212,0.08));
+  border:1px solid rgba(124,58,237,0.25);border-radius:18px;padding:24px;margin-bottom:16px;position:relative;overflow:hidden;
+}
+.student-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,0.15) 0%,transparent 70%);pointer-events:none}
+.sh-name{font-size:22px;font-weight:900;margin-bottom:4px}
+.sh-info{font-size:12px;color:var(--text-muted);margin-bottom:18px;display:flex;gap:14px;flex-wrap:wrap}
+.sh-info span{display:flex;align-items:center;gap:4px}
+
+.countdown-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.countdown-box{background:rgba(0,0,0,0.3);border-radius:12px;padding:14px;text-align:center;border:1px solid var(--border2)}
+.cd-label{font-size:10px;color:var(--text-muted);margin-bottom:6px;font-weight:600;letter-spacing:0.5px}
+.cd-days{font-size:32px;font-weight:900;line-height:1}
+.cd-unit{font-size:10px;color:var(--text-muted);margin-top:3px}
+.cd-exp{font-size:11px;font-weight:700;margin-top:4px}
+.cd-tajrobi .cd-days{color:var(--success)}
+.cd-riazi .cd-days{color:var(--blue)}
+
+.sub-status-box{border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.sub-ok{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25)}
+.sub-warn{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25)}
+.sub-bad{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);animation:pulse 2s infinite}
+.ssb-icon{font-size:28px;flex-shrink:0}
+.ssb-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.ssb-sub{font-size:11px;color:var(--text-muted)}
+
+/* ===== LESSONS ===== */
+.lessons-container{display:flex;flex-direction:column;gap:9px}
+.lesson-row{background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:13px;position:relative;animation:slideR 0.2s ease}
 @keyframes slideR{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
-.lesson-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:10px;align-items:end}
-.lesson-bot{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;align-items:end}
-.rm-btn{position:absolute;top:10px;left:10px;width:24px;height:24px;border-radius:50%;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:var(--danger);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.lesson-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px;margin-bottom:9px;align-items:end}
+.lesson-bot{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:9px;align-items:end}
+.lesson-note{margin-top:0}
+.rm-btn{position:absolute;top:9px;left:9px;width:22px;height:22px;border-radius:50%;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:var(--danger);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
 .rm-btn:hover{background:rgba(239,68,68,0.25)}
-.add-btn{width:100%;padding:11px;border:1.5px dashed var(--border2);border-radius:10px;background:transparent;color:var(--accent);font-family:'Vazirmatn',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;margin-top:10px}
-.add-btn:hover{border-color:var(--accent);background:rgba(59,130,246,0.06)}
+.add-btn{width:100%;padding:10px;border:1.5px dashed var(--border2);border-radius:9px;background:transparent;color:var(--accent2);font-family:'Vazirmatn',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;margin-top:9px}
+.add-btn:hover{border-color:var(--accent2);background:rgba(124,58,237,0.06)}
 
-/* SUMMARY */
-.sum-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
-.sum-card{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:16px;text-align:center}
-.sum-val{font-size:24px;font-weight:800;margin-bottom:3px}
-.sum-lbl{font-size:11px;color:var(--text-muted)}
+/* ===== SUMMARY ===== */
+.sum-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.sum-card{background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:14px;text-align:center}
+.sum-val{font-size:22px;font-weight:800;margin-bottom:2px}
+.sum-lbl{font-size:10px;color:var(--text-muted)}
 
-/* SAT SLIDER */
-.sat-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.sat-num{font-size:30px;font-weight:900;color:var(--accent)}
-.sat-emoji{font-size:28px}
-input[type=range]{-webkit-appearance:none;appearance:none;height:8px;border-radius:4px;background:var(--surface2);border:none;padding:0;cursor:pointer;width:100%}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent3));cursor:pointer;box-shadow:0 0 10px rgba(59,130,246,0.4);border:2px solid var(--bg)}
+/* ===== SAT SLIDER ===== */
+.sat-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.sat-num{font-size:28px;font-weight:900;color:var(--accent2)}
+.sat-emoji{font-size:26px}
+input[type=range]{-webkit-appearance:none;appearance:none;height:7px;border-radius:4px;background:var(--surface2);border:none;padding:0;cursor:pointer;width:100%}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));cursor:pointer;box-shadow:0 0 10px rgba(124,58,237,0.5);border:2px solid var(--bg)}
 
-.submit-btn{width:100%;padding:15px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent3));color:#fff;font-family:'Vazirmatn',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all 0.3s}
-.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(59,130,246,0.3)}
+.submit-btn{width:100%;padding:14px;border-radius:11px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.3s}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(124,58,237,0.4)}
 .submit-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
 
-/* STREAK */
-.streak-card{background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(249,115,22,0.06));border:1px solid rgba(245,158,11,0.2);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:16px;margin-bottom:18px}
+/* ===== STREAK ===== */
+.streak-card{background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(249,115,22,0.06));border:1px solid rgba(245,158,11,0.2);border-radius:13px;padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:24px;width:100%;max-width:640px;max-height:85vh;overflow-y:auto;animation:mIn 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:22px;width:100%;max-width:660px;max-height:88vh;overflow-y:auto;animation:mIn 0.3s cubic-bezier(0.34,1.56,0.64,1)}
 @keyframes mIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:none}}
-.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.modal-title{font-size:16px;font-weight:800}
-.close-btn{width:28px;height:28px;border-radius:7px;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.modal-title{font-size:15px;font-weight:800}
+.close-btn{width:26px;height:26px;border-radius:7px;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
 .close-btn:hover{background:var(--border)}
 
-.chart-box{background:var(--surface2);border-radius:12px;padding:14px;overflow-x:auto;margin-bottom:16px}
-.empty{text-align:center;padding:40px;color:var(--text-muted)}
-.empty-icon{font-size:36px;margin-bottom:10px}
+/* ===== REPORT DETAIL ===== */
+.report-detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.report-lesson-card{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:12px;margin-bottom:8px}
+.rlc-name{font-size:14px;font-weight:800;color:var(--accent2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.rlc-stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.rlc-note{font-size:12px;color:var(--text-dim);background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.15);border-radius:7px;padding:8px 10px;line-height:1.6}
 
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--success);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);z-index:9998;white-space:nowrap}
+/* ===== CHART ===== */
+.chart-box{background:var(--surface2);border-radius:11px;padding:13px;overflow-x:auto;margin-bottom:14px}
+
+/* ===== EMPTY ===== */
+.empty{text-align:center;padding:36px;color:var(--text-muted)}
+.empty-icon{font-size:34px;margin-bottom:9px}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--success);color:#fff;padding:11px 20px;border-radius:11px;font-size:13px;font-weight:700;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);z-index:9998;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ===== RENEW PANEL ===== */
+.renew-box{background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:12px;margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -192,13 +269,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 @media(max-width:640px){
   header{padding:0 12px}
-  .main{padding:16px 12px 60px}
+  .main{padding:14px 12px 60px}
   .stats-row{grid-template-columns:1fr 1fr}
   .form-grid{grid-template-columns:1fr}
   .lesson-top{grid-template-columns:1fr 1fr}
   .lesson-bot{grid-template-columns:1fr 1fr}
+  .countdown-grid{grid-template-columns:1fr 1fr}
   nav .nav-btn span{display:none}
-  .welcome-box{padding:32px 20px}
+  .welcome-advisor-card .wa-name{font-size:22px}
 }
 </style>
 </head>
@@ -212,19 +290,25 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 <!-- WELCOME -->
 <div class="screen active" id="welcomeScreen">
-  <div class="welcome-box">
-    <div class="welcome-logo">📚</div>
-    <div class="welcome-title">سیستم مشاور مهدی باقریان</div>
-    <div class="welcome-sub">شما کی هستید؟</div>
-    <div class="role-btns">
-      <button class="role-btn" onclick="goToLogin('advisor')">
-        <div class="rb-icon">🎓</div>
-        <div><div class="rb-title">مشاور هستم</div><div class="rb-sub">دسترسی کامل به همه دانش‌آموزان</div></div>
-      </button>
-      <button class="role-btn" onclick="goToLogin('student')">
-        <div class="rb-icon">📖</div>
-        <div><div class="rb-title">دانش‌آموز هستم</div><div class="rb-sub">ورود با کد اختصاصی</div></div>
-      </button>
+  <div class="welcome-wrap">
+    <div class="welcome-advisor-card">
+      <div class="wa-rank">🏆 رتبه ۶۳ کنکور سراسری تجربی</div>
+      <div class="wa-name">مهدی باقریان</div>
+      <div class="wa-title">دانشجوی پزشکی دانشگاه علوم پزشکی تهران</div>
+      <div class="wa-badge">🎓 مشاور تحصیلی تخصصی کنکور</div>
+    </div>
+    <div class="welcome-box">
+      <div class="welcome-sub">شما کی هستید؟</div>
+      <div class="role-btns">
+        <button class="role-btn advisor-btn" onclick="goToLogin('advisor')">
+          <div class="rb-icon">🎓</div>
+          <div><div class="rb-title">مشاور هستم</div><div class="rb-sub">دسترسی کامل به همه دانش‌آموزان</div></div>
+        </button>
+        <button class="role-btn student-btn" onclick="goToLogin('student')">
+          <div class="rb-icon">📖</div>
+          <div><div class="rb-title">دانش‌آموز هستم</div><div class="rb-sub">ورود با کد اختصاصی از مشاور</div></div>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -242,12 +326,50 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 </div>
 
+<!-- PROFILE SETUP -->
+<div class="screen" id="profileScreen">
+  <div class="profile-box">
+    <div style="font-size:40px;margin-bottom:12px;text-align:center">👋</div>
+    <div style="text-align:center;margin-bottom:20px">
+      <div class="profile-name" id="profileName">—</div>
+      <div style="font-size:13px;color:var(--text-muted)">خوش اومدی!</div>
+    </div>
+    <div class="profile-title">تکمیل پروفایل</div>
+    <div class="profile-sub">قبل از شروع، یه سری اطلاعات ازت لازم داریم. فقط یه بار پر میشه 🙂</div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-group">
+        <label>📚 پایه تحصیلی</label>
+        <select id="profileGrade">
+          <option value="">انتخاب کنید</option>
+          <option value="دهم">دهم</option>
+          <option value="یازدهم">یازدهم</option>
+          <option value="دوازدهم تجربی">دوازدهم تجربی</option>
+          <option value="دوازدهم ریاضی">دوازدهم ریاضی</option>
+          <option value="فارغ‌التحصیل تجربی">فارغ‌التحصیل تجربی (کنکوری)</option>
+          <option value="فارغ‌التحصیل ریاضی">فارغ‌التحصیل ریاضی (کنکوری)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>🎯 رشته تحصیلی</label>
+        <select id="profileField">
+          <option value="">انتخاب کنید</option>
+          <option value="تجربی">تجربی</option>
+          <option value="ریاضی">ریاضی</option>
+          <option value="انسانی">انسانی</option>
+          <option value="هنر">هنر</option>
+        </select>
+      </div>
+    </div>
+    <button class="submit-btn" onclick="saveProfile()" style="margin-top:24px">✅ ذخیره و ورود</button>
+  </div>
+</div>
+
 <!-- ADVISOR APP -->
 <div class="screen" id="advisorApp">
 <header>
   <div class="logo">
     <div class="logo-icon">🎓</div>
-    <div><div class="logo-name">مهدی باقریان</div><div class="logo-role">پنل مشاور</div></div>
+    <div><div class="logo-name">مهدی باقریان | رتبه ۶۳</div><div class="logo-role">پنل مشاور تحصیلی</div></div>
   </div>
   <nav>
     <button class="nav-btn active" onclick="aShowPage('overview',this)">📊 <span>داشبورد</span></button>
@@ -260,24 +382,39 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 </header>
 <div class="main">
 
+  <!-- OVERVIEW -->
   <div id="a-overview" class="page-section active">
     <div class="page-hdr"><h1>داشبورد 📊</h1><p>نمای کلی از وضعیت همه دانش‌آموزان</p></div>
     <div class="stats-row" id="aOverviewStats"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
-      <div class="card"><div class="card-hdr"><div class="card-title"><div class="ibox ib-blue">📋</div>آخرین گزارش‌ها</div></div><div id="aRecentReports"></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card"><div class="card-hdr"><div class="card-title"><div class="ibox ib-purple">📋</div>آخرین گزارش‌ها</div></div><div id="aRecentReports"></div></div>
       <div class="card"><div class="card-hdr"><div class="card-title"><div class="ibox ib-gold">🏆</div>آخرین آزمون‌ها</div></div><div id="aRecentExams"></div></div>
     </div>
   </div>
 
+  <!-- STUDENTS -->
   <div id="a-students" class="page-section">
     <div class="page-hdr"><h1>دانش‌آموزان 👥</h1></div>
     <div class="card">
-      <div class="card-hdr"><div class="card-title"><div class="ibox ib-blue">➕</div>افزودن دانش‌آموز جدید</div></div>
-      <div class="form-grid" style="margin-bottom:14px">
+      <div class="card-hdr"><div class="card-title"><div class="ibox ib-purple">➕</div>افزودن دانش‌آموز جدید</div></div>
+      <div class="form-grid" style="margin-bottom:12px">
         <div class="form-group"><label>نام کامل</label><input type="text" id="newSName" placeholder="مثلاً: علی احمدی"></div>
         <div class="form-group"><label>کد دسترسی</label><input type="text" id="newSCode" placeholder="مثلاً: ALI2024" style="direction:ltr;letter-spacing:2px"></div>
+        <div class="form-group"><label>پایه تحصیلی</label>
+          <select id="newSGrade">
+            <option value="دهم">دهم</option><option value="یازدهم">یازدهم</option>
+            <option value="دوازدهم تجربی">دوازدهم تجربی</option><option value="دوازدهم ریاضی">دوازدهم ریاضی</option>
+            <option value="فارغ‌التحصیل">فارغ‌التحصیل (کنکوری)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>رشته تحصیلی</label>
+          <select id="newSField">
+            <option value="تجربی">تجربی</option><option value="ریاضی">ریاضی</option>
+            <option value="انسانی">انسانی</option><option value="هنر">هنر</option>
+          </select>
+        </div>
       </div>
-      <div style="display:flex;gap:10px">
+      <div style="display:flex;gap:9px">
         <button class="btn btn-outline" onclick="genCode()">🔀 کد تصادفی</button>
         <button class="btn btn-success" onclick="addStudent()">✅ ثبت دانش‌آموز</button>
       </div>
@@ -285,6 +422,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <div class="card"><div class="card-hdr"><div class="card-title"><div class="ibox ib-cyan">👥</div>لیست دانش‌آموزان</div></div><div class="students-grid" id="aStudentsList"></div></div>
   </div>
 
+  <!-- REPORTS -->
   <div id="a-reports" class="page-section">
     <div class="page-hdr"><h1>گزارش‌های روزانه 📋</h1></div>
     <div class="card">
@@ -293,54 +431,41 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <div class="form-group"><label>از تاریخ</label><input type="date" id="aFilterDate" onchange="aRenderReports()"></div>
       </div>
     </div>
-    <div class="card"><div id="aReportsList"></div></div>
+    <div id="aReportsList"></div>
   </div>
 
+  <!-- EXAMS (advisor sees student-submitted exams) -->
   <div id="a-exams" class="page-section">
-    <div class="page-hdr"><h1>نتایج آزمون‌ها 🏆</h1></div>
-    <div class="card">
-      <div class="card-hdr"><div class="card-title"><div class="ibox ib-gold">➕</div>ثبت نتیجه آزمون</div></div>
-      <div class="form-grid" style="margin-bottom:14px">
-        <div class="form-group"><label>دانش‌آموز</label><select id="examStudent"><option value="">انتخاب کنید</option></select></div>
-        <div class="form-group"><label>نام آزمون</label><input type="text" id="examName" placeholder="مثلاً: گزینه دو — مرحله ۳"></div>
-        <div class="form-group"><label>نوع آزمون</label><select id="examType"><option>آزمایشی</option><option>جامع</option><option>پیشرفت‌محور</option><option>شبیه‌ساز کنکور</option><option>مرحله‌ای</option></select></div>
-        <div class="form-group"><label>تاریخ</label><input type="date" id="examDate"></div>
-        <div class="form-group"><label>تراز</label><input type="number" id="examTaraz" placeholder="مثلاً: 6840"></div>
-        <div class="form-group"><label>رتبه</label><input type="number" id="examRank" placeholder="مثلاً: 125"></div>
-      </div>
-      <div style="margin-bottom:14px">
-        <div style="font-size:12px;font-weight:700;color:var(--text-dim);margin-bottom:10px">درصد هر درس</div>
-        <div class="form-grid" id="examSubjGrid"></div>
-      </div>
-      <button class="btn btn-primary" onclick="addExam()">✅ ثبت نتیجه</button>
-    </div>
+    <div class="page-hdr"><h1>نتایج آزمون‌ها 🏆</h1><p>نتایج ثبت‌شده توسط دانش‌آموزان</p></div>
     <div class="card">
       <div class="card-hdr">
-        <div class="card-title"><div class="ibox ib-gold">📋</div>نتایج ثبت‌شده</div>
-        <select id="aFilterExamSt" onchange="aRenderExams()" style="padding:6px 10px;font-size:12px;border-radius:8px;width:auto"><option value="">همه</option></select>
+        <div class="card-title"><div class="ibox ib-gold">📋</div>آزمون‌های ثبت‌شده</div>
+        <select id="aFilterExamSt" onchange="aRenderExams()" style="padding:5px 9px;font-size:11px;border-radius:7px;width:auto"><option value="">همه</option></select>
       </div>
       <div id="aExamsList"></div>
     </div>
   </div>
 
+  <!-- CHARTS -->
   <div id="a-charts" class="page-section">
     <div class="page-hdr"><h1>نمودار پیشرفت 📈</h1></div>
-    <div class="card" style="margin-bottom:18px"><div class="form-group" style="max-width:280px"><label>انتخاب دانش‌آموز</label><select id="aChartSt" onchange="aRenderCharts()"><option value="">انتخاب کنید</option></select></div></div>
+    <div class="card" style="margin-bottom:16px"><div class="form-group" style="max-width:260px"><label>انتخاب دانش‌آموز</label><select id="aChartSt" onchange="aRenderCharts()"><option value="">انتخاب کنید</option></select></div></div>
     <div id="aChartsArea"></div>
   </div>
 
 </div>
 </div>
 
-<!-- STUDENT APP -->
+<!-- ======= STUDENT APP ======= -->
 <div class="screen" id="studentApp">
 <header>
   <div class="logo">
-    <div class="logo-icon" id="sLogoIcon" style="font-size:15px;font-weight:900">?</div>
-    <div><div class="logo-name" id="sHeaderName">—</div><div class="logo-role" id="sHeaderCode">—</div></div>
+    <div class="logo-icon" id="sLogoIcon" style="font-size:14px;font-weight:900">?</div>
+    <div><div class="logo-name" id="sHeaderName">—</div><div class="logo-role" id="sHeaderGrade">—</div></div>
   </div>
   <nav>
-    <button class="nav-btn active" onclick="sShowPage('report',this)">📝 <span>گزارش</span></button>
+    <button class="nav-btn active" onclick="sShowPage('home',this)">🏠 <span>خانه</span></button>
+    <button class="nav-btn" onclick="sShowPage('report',this)">📝 <span>گزارش</span></button>
     <button class="nav-btn" onclick="sShowPage('history',this)">📋 <span>تاریخچه</span></button>
     <button class="nav-btn" onclick="sShowPage('exams',this)">🏆 <span>آزمون‌ها</span></button>
     <button class="nav-btn" onclick="sShowPage('progress',this)">📈 <span>پیشرفت</span></button>
@@ -349,52 +474,106 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 </header>
 <div class="main">
 
-  <div id="s-report" class="page-section active">
-    <div id="sQuote" style="background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(139,92,246,0.08));border:1px solid rgba(59,130,246,0.2);border-radius:14px;padding:16px 20px;text-align:center;margin-bottom:16px;font-size:14px;color:var(--text-dim);line-height:1.7"></div>
+  <!-- HOME -->
+  <div id="s-home" class="page-section active">
+    <div class="student-hero">
+      <div class="sh-name" id="shName">—</div>
+      <div class="sh-info">
+        <span id="shGrade">—</span>
+        <span id="shField">—</span>
+      </div>
+      <div class="countdown-grid">
+        <div class="countdown-box cd-tajrobi">
+          <div class="cd-label">⏳ کنکور تجربی</div>
+          <div class="cd-days" id="cdTajrobi">—</div>
+          <div class="cd-unit">روز مانده</div>
+          <div class="cd-exp" style="color:var(--success)" id="cdTajrobiDate"></div>
+        </div>
+        <div class="countdown-box cd-riazi">
+          <div class="cd-label">📐 کنکور ریاضی</div>
+          <div class="cd-days" id="cdRiazi">—</div>
+          <div class="cd-unit">روز مانده</div>
+          <div class="cd-exp" style="color:var(--blue)" id="cdRiaziDate"></div>
+        </div>
+      </div>
+      <div id="subStatusBox"></div>
+    </div>
+
     <div id="sStreakBox" class="streak-card"></div>
+
     <div class="card">
-      <div class="card-title" style="margin-bottom:16px"><div class="ibox ib-blue">📅</div>اطلاعات روز</div>
+      <div class="card-title" style="margin-bottom:14px"><div class="ibox ib-purple">📊</div>خلاصه این هفته</div>
+      <div class="stats-row" id="sWeekStats" style="grid-template-columns:repeat(3,1fr)"></div>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div id="s-report" class="page-section">
+    <div id="sQuote" style="background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(6,182,212,0.06));border:1px solid rgba(124,58,237,0.2);border-radius:13px;padding:14px 18px;text-align:center;margin-bottom:14px;font-size:13px;color:var(--text-dim);line-height:1.7"></div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px"><div class="ibox ib-cyan">📅</div>اطلاعات روز</div>
       <div class="form-grid">
         <div class="form-group"><label>تاریخ</label><input type="date" id="sDate"></div>
         <div class="form-group"><label>وضعیت کلی روز</label><select id="sMood"><option value="great">🔥 خیلی خوب</option><option value="good" selected>😊 خوب</option><option value="ok">😐 معمولی</option><option value="bad">😞 بد</option></select></div>
       </div>
     </div>
     <div class="card">
-      <div class="card-title" style="margin-bottom:16px"><div class="ibox ib-cyan">📖</div>درس‌های امروز</div>
+      <div class="card-title" style="margin-bottom:14px"><div class="ibox ib-purple">📖</div>درس‌های امروز</div>
       <div class="lessons-container" id="sLessonsContainer"></div>
       <button class="add-btn" onclick="sAddLesson()">＋ اضافه کردن درس</button>
     </div>
     <div class="card">
-      <div class="card-title" style="margin-bottom:16px"><div class="ibox ib-green">📊</div>خلاصه روز</div>
+      <div class="card-title" style="margin-bottom:14px"><div class="ibox ib-green">📊</div>خلاصه روز</div>
       <div class="sum-row">
-        <div class="sum-card"><div class="sum-val c-blue" id="sSumH">۰:۰۰</div><div class="sum-lbl">مجموع مطالعه</div></div>
+        <div class="sum-card"><div class="sum-val c-purple" id="sSumH">۰:۰۰</div><div class="sum-lbl">مجموع مطالعه</div></div>
         <div class="sum-card"><div class="sum-val c-cyan" id="sSumT">۰</div><div class="sum-lbl">مجموع تست</div></div>
         <div class="sum-card"><div class="sum-val c-green" id="sSumP">—</div><div class="sum-lbl">میانگین درصد</div></div>
       </div>
     </div>
     <div class="card">
-      <div class="card-title" style="margin-bottom:16px"><div class="ibox ib-gold">😊</div>رضایت از امروز</div>
-      <div class="sat-row"><div><div class="sat-num" id="sSatV">۷۰٪</div><div style="font-size:11px;color:var(--text-muted)">درصد رضایت</div></div><div class="sat-emoji" id="sSatE">😊</div></div>
+      <div class="card-title" style="margin-bottom:14px"><div class="ibox ib-gold">😊</div>رضایت از امروز</div>
+      <div class="sat-row"><div><div class="sat-num" id="sSatV">۷۰٪</div><div style="font-size:10px;color:var(--text-muted)">درصد رضایت</div></div><div class="sat-emoji" id="sSatE">😊</div></div>
       <input type="range" id="sSatS" min="0" max="100" value="70" oninput="sUpdateSat(this.value)">
-      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text-muted)"><span>😞 اصلاً</span><span>😐 متوسط</span><span>🤩 عالی</span></div>
+      <div style="display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:var(--text-muted)"><span>😞</span><span>😐</span><span>🤩</span></div>
     </div>
     <div class="card">
-      <div class="card-title" style="margin-bottom:16px"><div class="ibox ib-purple">💬</div>یادداشت</div>
-      <textarea id="sNotes" rows="3" placeholder="امروز چه احساسی داشتی؟ چی سخت بود؟"></textarea>
+      <div class="card-title" style="margin-bottom:14px"><div class="ibox ib-pink">💬</div>یادداشت کلی روز</div>
+      <textarea id="sNotes" rows="3" placeholder="امروز چه احساسی داشتی؟ چی سخت بود؟ هدف فردات چیه؟"></textarea>
     </div>
     <button class="submit-btn" id="sSubmitBtn" onclick="sSubmitReport()">✅ ثبت گزارش امروز</button>
   </div>
 
+  <!-- HISTORY -->
   <div id="s-history" class="page-section">
     <div class="page-hdr"><h1>تاریخچه گزارش‌ها 📋</h1></div>
     <div id="sHistoryList"></div>
   </div>
 
+  <!-- EXAMS (student submits own exams) -->
   <div id="s-exams" class="page-section">
-    <div class="page-hdr"><h1>نتایج آزمون‌ها 🏆</h1><p>نتایجی که مشاورت ثبت کرده</p></div>
-    <div id="sExamsList"></div>
+    <div class="page-hdr"><h1>نتایج آزمون‌ها 🏆</h1></div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title"><div class="ibox ib-gold">➕</div>ثبت نتیجه آزمون جدید</div></div>
+      <div class="form-grid" style="margin-bottom:12px">
+        <div class="form-group"><label>نام آزمون</label><input type="text" id="sExamName" placeholder="مثلاً: گزینه دو — مرحله ۳"></div>
+        <div class="form-group"><label>نوع آزمون</label><select id="sExamType"><option>آزمایشی</option><option>جامع</option><option>پیشرفت‌محور</option><option>شبیه‌ساز کنکور</option><option>مرحله‌ای</option></select></div>
+        <div class="form-group"><label>تاریخ آزمون</label><input type="date" id="sExamDate"></div>
+        <div class="form-group"><label>تراز</label><input type="number" id="sExamTaraz" placeholder="مثلاً: 6840"></div>
+        <div class="form-group"><label>رتبه در آزمون</label><input type="number" id="sExamRank" placeholder="مثلاً: 125"></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text-dim);margin-bottom:9px">درصد هر درس</div>
+        <div class="form-grid" id="sExamSubjGrid"></div>
+      </div>
+      <button class="btn btn-primary" id="sExamSubmitBtn" onclick="sAddExam()">✅ ثبت نتیجه</button>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title"><div class="ibox ib-gold">📋</div>آزمون‌های قبلی</div></div>
+      <div id="sExamsList"></div>
+    </div>
   </div>
 
+  <!-- PROGRESS -->
   <div id="s-progress" class="page-section">
     <div class="page-hdr"><h1>پیشرفت من 📈</h1></div>
     <div id="sProgressArea"></div>
@@ -411,208 +590,259 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== SUPABASE CONFIG =====
-const SUPABASE_URL = 'https://ngvgtwbkkqalmzvnscns.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ndmd0d2Jra3FhbG16dm5zY25zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMDgzMjMsImV4cCI6MjA4Nzc4NDMyM30.N8MtsytKHNivrMjp1w9I_pfdy1bUYblz3rezRtkQkRM';
-const ADVISOR_PASSWORD = 'mahdi1234';
-const SUBJECTS = ['زیست‌شناسی','شیمی','فیزیک','ریاضی','ادبیات','عربی','دین و زندگی','زبان انگلیسی'];
-const QUOTES = ['هر روز یه قدم به رویات نزدیک‌تر میشی 🌟','مداومت کلید موفقیته. امروز هم بدرخش ✨','کنکور داره نزدیک میشه. این لحظات طلاییه 🏆','هر تستی که میزنی یه سنگ رو جاده پیشرفته 🪨','رتبه ۶۳ مهدی نشون داد که با برنامه همه چیز ممکنه 💪','امروز سخت بخون، فردا راحت بخواب 😴'];
+// ===== CONFIG =====
+const SUPABASE_URL='https://ngvgtwbkkqalmzvnscns.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ndmd0d2Jra3FhbG16dm5zY25zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMDgzMjMsImV4cCI6MjA4Nzc4NDMyM30.N8MtsytKHNivrMjp1w9I_pfdy1bUYblz3rezRtkQkRM';
+const ADVISOR_PASSWORD='mahdi1234';
+const SUBJECTS=['زیست‌شناسی','شیمی','فیزیک','ریاضی','ادبیات','عربی','دین و زندگی','زبان انگلیسی'];
+const QUOTES=['هر روز یه قدم به رویات نزدیک‌تر میشی 🌟','مداومت کلید موفقیته. امروز هم بدرخش ✨','کنکور داره نزدیک میشه. این لحظات طلاییه 🏆','هر تستی که میزنی یه سنگ رو جاده پیشرفته 🪨','رتبه ۶۳ مهدی نشون داد که با برنامه همه چیز ممکنه 💪','امروز سخت بخون، فردا راحت بخواب 😴','تو لایق بهترینی، فقط ادامه بده 💜'];
 
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+const {createClient}=supabase;
+const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let currentRole = null;
-let currentStudent = null;
-let sLessonCount = 0;
-let cachedStudents = [];
-let cachedReports = [];
-let cachedExams = [];
+let currentRole=null,currentStudent=null,sLessonCount=0;
+let cachedStudents=[],cachedReports=[],cachedExams=[];
 
-// ===== INIT =====
-async function initDB() {
-  showLoading('در حال اتصال به سرور...');
-  try {
-    // Pre-load all data
-    const [s, r, e] = await Promise.all([
-      db.from('students').select('*').order('created_at', {ascending:false}),
-      db.from('reports').select('*').order('created_at', {ascending:false}),
-      db.from('exams').select('*').order('created_at', {ascending:false})
-    ]);
-    cachedStudents = s.data || [];
-    cachedReports = r.data || [];
-    cachedExams = e.data || [];
-  } catch(err) {
-    console.log('DB init:', err);
-  }
-  hideLoading();
+// ===== JALALI (Shamsi) helpers =====
+function toJalali(gy,gm,gd){
+  const g_d_no=[0,31,59,90,120,151,181,212,243,273,304,334];
+  let jy,jm,jd,g_y,g_y2,days;
+  gy=parseInt(gy);gm=parseInt(gm);gd=parseInt(gd);
+  g_y=gy-1600;gm=gm-1;gd=gd-1;
+  let g_day_no=365*g_y+Math.floor((g_y+3)/4)-Math.floor((g_y+99)/100)+Math.floor((g_y+399)/400);
+  for(let i=0;i<gm;i++)g_day_no+=g_d_no[i];
+  if(gm>1&&((gy%4==0&&gy%100!=0)||(gy%400==0)))g_day_no++;
+  g_day_no+=gd;
+  let j_day_no=g_day_no-79;
+  let j_np=Math.floor(j_day_no/12053);j_day_no%=12053;
+  jy=979+33*j_np+4*Math.floor(j_day_no/1461);
+  j_day_no%=1461;
+  if(j_day_no>=366){jy+=Math.floor((j_day_no-1)/365);j_day_no=(j_day_no-1)%365;}
+  const j_days_in_month=[31,31,31,31,31,31,30,30,30,30,30,29];
+  for(let i=0;i<11&&j_day_no>=j_days_in_month[i];i++){j_day_no-=j_days_in_month[i];jm=i+1;}
+  jm=jm||0;jd=j_day_no+1;
+  return{y:jy,m:jm+1,d:jd};
+}
+
+function todayJalali(){
+  const n=new Date();
+  return toJalali(n.getFullYear(),n.getMonth()+1,n.getDate());
+}
+
+function jalaliToGregorian(jy,jm,jd){
+  jy=parseInt(jy);jm=parseInt(jm);jd=parseInt(jd);
+  let gy,gm,gd;
+  let jy2=jy-979,jm2=jm-1,jd2=jd-1;
+  let j_day_no=365*jy2+Math.floor(jy2/33)*8+Math.floor((jy2%33+3)/4);
+  for(let i=0;i<jm2;i++)j_day_no+=[31,31,31,31,31,31,30,30,30,30,30,29][i];
+  j_day_no+=jd2;
+  let g_day_no=j_day_no+79;
+  let gy2=1600+400*Math.floor(g_day_no/146097);g_day_no=g_day_no%146097;
+  let leap=true;
+  if(g_day_no>=36525){g_day_no--;gy2+=100*Math.floor(g_day_no/36524);g_day_no=g_day_no%36524;if(g_day_no>=365)g_day_no++;else leap=false;}
+  gy2+=4*Math.floor(g_day_no/1461);g_day_no%=1461;
+  if(g_day_no>=366){leap=false;g_day_no--;gy2+=Math.floor(g_day_no/365);g_day_no=g_day_no%365;}
+  const g_days_in_month=[31,28+leap,31,30,31,30,31,31,30,31,30,31];
+  let gm2;
+  for(gm2=0;gm2<11&&g_day_no>=g_days_in_month[gm2];gm2++)g_day_no-=g_days_in_month[gm2];
+  gy=gy2;gm=gm2+1;gd=g_day_no+1;
+  return{y:gy,m:gm,d:gd};
+}
+
+function jalaliStr(jy,jm,jd){
+  const mn=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+  return`${toPNum(jd)} ${mn[jm-1]} ${toPNum(jy)}`;
+}
+
+function gregorianToJalaliStr(dateStr){
+  if(!dateStr)return'';
+  const[y,m,d]=dateStr.split('-');
+  const j=toJalali(y,m,d);
+  return jalaliStr(j.y,j.m,j.d);
+}
+
+// Konkur dates (approximate Gregorian)
+const TAJROBI_DATE=new Date('2025-06-22'); // خرداد ۱۴۰۴
+const RIAZI_DATE=new Date('2025-06-19');
+
+function daysUntil(targetDate){
+  const now=new Date();
+  now.setHours(0,0,0,0);
+  const diff=Math.ceil((targetDate-now)/(1000*60*60*24));
+  return diff;
 }
 
 // ===== SCREENS =====
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goToLogin(role){
+  currentRole=role;
+  if(role==='advisor'){document.getElementById('loginLogo').textContent='🎓';document.getElementById('loginTitle').textContent='ورود مشاور';document.getElementById('loginSub').textContent='رمز عبور را وارد کنید';document.getElementById('loginInput').type='password';document.getElementById('loginInput').placeholder='••••••••';document.getElementById('loginInput').style.letterSpacing='4px';}
+  else{document.getElementById('loginLogo').textContent='📖';document.getElementById('loginTitle').textContent='ورود دانش‌آموز';document.getElementById('loginSub').textContent='کد اختصاصی‌ات را وارد کن';document.getElementById('loginInput').type='text';document.getElementById('loginInput').placeholder='XXXXXX';document.getElementById('loginInput').style.letterSpacing='6px';}
+  document.getElementById('loginInput').value='';document.getElementById('loginErr').style.display='none';
+  showScreen('loginScreen');setTimeout(()=>document.getElementById('loginInput').focus(),300);
 }
+function goBack(){showScreen('welcomeScreen');}
 
-function goToLogin(role) {
-  currentRole = role;
-  if(role==='advisor') {
-    document.getElementById('loginLogo').textContent='🎓';
-    document.getElementById('loginTitle').textContent='ورود مشاور';
-    document.getElementById('loginSub').textContent='رمز عبور را وارد کنید';
-    document.getElementById('loginInput').type='password';
-    document.getElementById('loginInput').placeholder='••••••••';
-    document.getElementById('loginInput').style.letterSpacing='4px';
-  } else {
-    document.getElementById('loginLogo').textContent='📖';
-    document.getElementById('loginTitle').textContent='ورود دانش‌آموز';
-    document.getElementById('loginSub').textContent='کد اختصاصی‌ات را وارد کن';
-    document.getElementById('loginInput').type='text';
-    document.getElementById('loginInput').placeholder='XXXXXX';
-    document.getElementById('loginInput').style.letterSpacing='6px';
-  }
-  document.getElementById('loginInput').value='';
+async function doLogin(){
+  const val=document.getElementById('loginInput').value.trim();
+  const btn=document.getElementById('loginBtn');
+  btn.disabled=true;btn.textContent='در حال بررسی...';
   document.getElementById('loginErr').style.display='none';
-  showScreen('loginScreen');
-  setTimeout(()=>document.getElementById('loginInput').focus(),300);
-}
-
-function goBack() { showScreen('welcomeScreen'); }
-
-async function doLogin() {
-  const val = document.getElementById('loginInput').value.trim();
-  const btn = document.getElementById('loginBtn');
-  const err = document.getElementById('loginErr');
-  err.style.display='none';
-  btn.disabled=true; btn.textContent='در حال بررسی...';
-  if(currentRole==='advisor') {
-    if(val===ADVISOR_PASSWORD) {
-      showScreen('advisorApp');
-      await initAdvisorApp();
-    } else {
-      err.textContent='رمز اشتباه است!';
-      err.style.display='block';
-    }
+  if(currentRole==='advisor'){
+    if(val===ADVISOR_PASSWORD){showScreen('advisorApp');await initAdvisorApp();}
+    else{document.getElementById('loginErr').textContent='رمز اشتباه است!';document.getElementById('loginErr').style.display='block';}
   } else {
-    // Load fresh students
-    const {data} = await db.from('students').select('*');
-    cachedStudents = data || [];
-    const student = cachedStudents.find(s=>s.code===val.toUpperCase());
-    if(student) {
-      currentStudent = student;
-      showScreen('studentApp');
-      await initStudentApp();
-    } else {
-      err.textContent='کد اشتباهه! از مشاورت بخواه کدت رو بده';
-      err.style.display='block';
+    const{data}=await db.from('students').select('*');
+    cachedStudents=data||[];
+    const student=cachedStudents.find(s=>s.code===val.toUpperCase());
+    if(student){
+      currentStudent=student;
+      // اگه پروفایل کامل نشده، نشون بده
+      if(!student.grade||!student.field){
+        document.getElementById('profileName').textContent=student.name;
+        showScreen('profileScreen');
+      } else {
+        showScreen('studentApp');await initStudentApp();
+      }
     }
+    else{document.getElementById('loginErr').textContent='کد اشتباهه! از مشاورت بخواه کدت رو بده';document.getElementById('loginErr').style.display='block';}
   }
-  btn.disabled=false; btn.textContent='ورود';
+  btn.disabled=false;btn.textContent='ورود';
 }
 
-function logout() { currentStudent=null; currentRole=null; showScreen('welcomeScreen'); }
-function showLoading(txt='در حال بارگذاری...') { document.getElementById('loadingText').textContent=txt; document.getElementById('loadingOverlay').classList.add('show'); }
-function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
+function logout(){currentStudent=null;currentRole=null;showScreen('welcomeScreen');}
 
-// ===== ADVISOR APP =====
-async function initAdvisorApp() {
-  showLoading('در حال بارگذاری داده‌ها...');
-  document.getElementById('examDate').valueAsDate = new Date();
-  buildExamSubjGrid();
-  await refreshAll();
+async function saveProfile(){
+  const grade=document.getElementById('profileGrade').value;
+  const field=document.getElementById('profileField').value;
+  if(!grade||!field){showToast('پایه و رشته رو انتخاب کن','warn');return;}
+  showLoading('در حال ذخیره...');
+  const{error}=await db.from('students').update({grade,field}).eq('code',currentStudent.code);
+  if(error){hideLoading();showToast('خطا: '+error.message,'warn');return;}
+  currentStudent={...currentStudent,grade,field};
   hideLoading();
+  showScreen('studentApp');
+  await initStudentApp();
+}
+function showLoading(t='در حال بارگذاری...'){document.getElementById('loadingText').textContent=t;document.getElementById('loadingOverlay').classList.add('show');}
+function hideLoading(){document.getElementById('loadingOverlay').classList.remove('show');}
+
+// ===== ADVISOR =====
+async function initAdvisorApp(){
+  showLoading('در حال بارگذاری داده‌ها...');
+  document.getElementById('examDate')&&(document.getElementById('examDate').valueAsDate=new Date());
+  await refreshAll();hideLoading();
 }
 
-async function refreshAll() {
-  const [s,r,e] = await Promise.all([
+async function refreshAll(){
+  const[s,r,e]=await Promise.all([
     db.from('students').select('*').order('created_at',{ascending:false}),
     db.from('reports').select('*').order('created_at',{ascending:false}),
     db.from('exams').select('*').order('created_at',{ascending:false})
   ]);
-  cachedStudents = s.data||[];
-  cachedReports = r.data||[];
-  cachedExams = e.data||[];
+  cachedStudents=s.data||[];cachedReports=r.data||[];cachedExams=e.data||[];
   aRenderAll();
 }
 
-function aShowPage(name,btn) {
+function aShowPage(name,btn){
   document.querySelectorAll('#advisorApp .page-section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('#advisorApp .nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('a-'+name).classList.add('active');
-  if(btn) btn.classList.add('active');
-  if(name==='charts') aRenderCharts();
+  if(btn)btn.classList.add('active');
+  if(name==='charts')aRenderCharts();
 }
 
-function aRenderAll() {
-  aRenderOverview();
-  aRenderStudents();
-  aUpdateSelects();
-  aRenderReports();
-  aRenderExams();
+function aRenderAll(){
+  aRenderOverview();aRenderStudents();aUpdateSelects();aRenderReports();aRenderExams();
 }
 
-function aRenderOverview() {
+function aRenderOverview(){
   const s=cachedStudents,r=cachedReports,e=cachedExams;
+  const expiredCount=s.filter(x=>isSubExpired(x)).length;
   document.getElementById('aOverviewStats').innerHTML=`
-    <div class="stat-card"><div class="stat-num c-blue">${toPNum(s.length)}</div><div class="stat-lbl">دانش‌آموز</div></div>
+    <div class="stat-card"><div class="stat-num c-purple">${toPNum(s.length)}</div><div class="stat-lbl">دانش‌آموز</div></div>
     <div class="stat-card"><div class="stat-num c-cyan">${toPNum(r.length)}</div><div class="stat-lbl">گزارش</div></div>
     <div class="stat-card"><div class="stat-num c-gold">${toPNum(e.length)}</div><div class="stat-lbl">آزمون</div></div>
-    <div class="stat-card"><div class="stat-num c-green">${r.length?toPNum(Math.round(r.reduce((a,x)=>a+x.satisfaction,0)/r.length))+'٪':'—'}</div><div class="stat-lbl">میانگین رضایت</div></div>`;
+    <div class="stat-card" style="${expiredCount>0?'border-color:rgba(239,68,68,0.4)':''}"><div class="stat-num" style="color:${expiredCount>0?'var(--danger)':'var(--success)'}">${toPNum(expiredCount)}</div><div class="stat-lbl">اشتراک منقضی</div></div>`;
   const rr=[...r].slice(0,5);
-  document.getElementById('aRecentReports').innerHTML=rr.length?rr.map(x=>`<div class="report-row" onclick="openReportModal('${x.id}')"><div style="font-weight:700;font-size:14px;min-width:80px">${x.student_name}</div><div style="font-size:12px;color:var(--text-muted)">${fDate(x.date)}</div><div style="font-size:12px;color:var(--text-dim)">${toPNum(Math.floor(x.total_mins/60))}:${String(x.total_mins%60).padStart(2,'0')}ساعت</div>${satBadge(x.satisfaction)}</div>`).join(''):'<div class="empty"><div class="empty-icon">📭</div>گزارشی ثبت نشده</div>';
+  document.getElementById('aRecentReports').innerHTML=rr.length?rr.map(x=>`<div class="report-row" onclick="openReportModal('${x.id}')"><div style="font-weight:700;font-size:13px;min-width:70px">${x.student_name}</div><div style="font-size:11px;color:var(--text-muted)">${gregorianToJalaliStr(x.date)}</div><div style="font-size:11px;color:var(--text-dim)">${toPNum(Math.floor(x.total_mins/60))}:${String(x.total_mins%60).padStart(2,'0')}</div>${satBadge(x.satisfaction)}</div>`).join(''):'<div class="empty"><div class="empty-icon">📭</div>گزارشی ثبت نشده</div>';
   const re=[...e].slice(0,5);
-  document.getElementById('aRecentExams').innerHTML=re.length?re.map(x=>`<div class="report-row" onclick="openExamModal('${x.id}')"><div><div style="font-weight:700;font-size:14px">${x.student_name}</div><div style="font-size:12px;color:var(--text-muted)">${x.exam_name}</div></div><div style="font-size:12px;color:var(--text-muted)">${fDate(x.date)}</div>${x.taraz?`<span class="badge bg-blue">تراز ${toPNum(x.taraz)}</span>`:''}</div>`).join(''):'<div class="empty"><div class="empty-icon">🏆</div>آزمونی ثبت نشده</div>';
+  document.getElementById('aRecentExams').innerHTML=re.length?re.map(x=>`<div class="report-row" onclick="openExamModal('${x.id}')"><div><div style="font-weight:700;font-size:13px">${x.student_name}</div><div style="font-size:11px;color:var(--text-muted)">${x.exam_name}</div></div>${x.taraz?`<span class="badge bg-purple">تراز ${toPNum(x.taraz)}</span>`:''}</div>`).join(''):'<div class="empty"><div class="empty-icon">🏆</div>آزمونی ثبت نشده</div>';
 }
 
-function genCode() {
-  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code='';for(let i=0;i<6;i++)code+=c[Math.floor(Math.random()*c.length)];
-  document.getElementById('newSCode').value=code;
+// Subscription helpers
+function isSubExpired(student){
+  if(!student.sub_until)return true;
+  const until=new Date(student.sub_until);until.setHours(23,59,59);
+  return new Date()>until;
+}
+function subDaysLeft(student){
+  if(!student.sub_until)return-999;
+  const until=new Date(student.sub_until);until.setHours(23,59,59);
+  return Math.ceil((until-new Date())/(1000*60*60*24));
 }
 
-async function addStudent() {
+function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let code='';for(let i=0;i<6;i++)code+=c[Math.floor(Math.random()*c.length)];document.getElementById('newSCode').value=code;}
+
+async function addStudent(){
   const name=document.getElementById('newSName').value.trim();
   const code=document.getElementById('newSCode').value.trim().toUpperCase();
+  const grade=document.getElementById('newSGrade').value;
+  const field=document.getElementById('newSField').value;
   if(!name||!code){showToast('اسم و کد را وارد کنید','warn');return;}
   if(cachedStudents.find(s=>s.code===code)){showToast('این کد قبلاً استفاده شده','warn');return;}
   showLoading('در حال ثبت...');
-  const {error}=await db.from('students').insert({name,code});
-  if(error){hideLoading();showToast('خطا در ثبت: '+error.message,'warn');return;}
-  document.getElementById('newSName').value='';
-  document.getElementById('newSCode').value='';
-  await refreshAll();
-  hideLoading();
-  showToast(`${name} با کد ${code} اضافه شد ✅`);
+  // default sub: 30 days from now
+  const subUntil=new Date();subUntil.setDate(subUntil.getDate()+30);
+  const{error}=await db.from('students').insert({name,code,grade,field,sub_until:subUntil.toISOString().split('T')[0]});
+  if(error){hideLoading();showToast('خطا: '+error.message,'warn');return;}
+  document.getElementById('newSName').value='';document.getElementById('newSCode').value='';
+  await refreshAll();hideLoading();showToast(`${name} اضافه شد ✅`);
 }
 
-function aRenderStudents() {
+async function renewSubscription(code,days){
+  const student=cachedStudents.find(s=>s.code===code);
+  if(!student)return;
+  let base=new Date();
+  if(student.sub_until&&!isSubExpired(student))base=new Date(student.sub_until);
+  base.setDate(base.getDate()+parseInt(days));
+  showLoading('در حال تمدید...');
+  await db.from('students').update({sub_until:base.toISOString().split('T')[0]}).eq('code',code);
+  await refreshAll();hideLoading();
+  showToast(`اشتراک ${student.name} تمدید شد ✅`);
+  closeModal('studentModal');openStudentModal(code);
+}
+
+function aRenderStudents(){
   const el=document.getElementById('aStudentsList');
   if(!cachedStudents.length){el.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="empty-icon">👤</div>هنوز دانش‌آموزی ثبت نشده</div>';return;}
   el.innerHTML=cachedStudents.map(s=>{
     const sr=cachedReports.filter(r=>r.student_code===s.code);
     const se=cachedExams.filter(e=>e.student_code===s.code);
-    const lr=sr[0];
+    const dLeft=subDaysLeft(s);
+    const expired=isSubExpired(s);
+    const subHtml=expired?`<span class="sub-expired">🔴 منقضی (${toPNum(Math.abs(dLeft))} روز پیش)</span>`:dLeft<=7?`<span class="sub-warning">⚠️ ${toPNum(dLeft)} روز مانده</span>`:`<span class="sub-active">✅ ${toPNum(dLeft)} روز مانده</span>`;
     return`<div class="student-card" onclick="openStudentModal('${s.code}')">
-      <div style="font-size:16px;font-weight:700;margin-bottom:4px">${s.name}</div>
-      <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:6px">🔑 <span class="code-tag" onclick="event.stopPropagation();copyCode('${s.code}')">${s.code}</span></div>
-      <div style="display:flex;gap:12px">
-        <div style="font-size:12px;color:var(--text-dim)"><strong>${toPNum(sr.length)}</strong> گزارش</div>
-        <div style="font-size:12px;color:var(--text-dim)"><strong>${toPNum(se.length)}</strong> آزمون</div>
-        ${lr?satBadge(lr.satisfaction):''}
+      <div style="font-size:15px;font-weight:700;margin-bottom:3px">${s.name}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">${s.grade||''} | ${s.field||''}</div>
+      <div style="margin-bottom:10px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)">🔑 <span class="code-tag" onclick="event.stopPropagation();copyCode('${s.code}')">${s.code}</span></div>
+      <div style="margin-bottom:8px">${subHtml}</div>
+      <div style="display:flex;gap:10px">
+        <div style="font-size:11px;color:var(--text-dim)"><strong>${toPNum(sr.length)}</strong> گزارش</div>
+        <div style="font-size:11px;color:var(--text-dim)"><strong>${toPNum(se.length)}</strong> آزمون</div>
       </div>
     </div>`;}).join('');
 }
 
-function aUpdateSelects() {
+function aUpdateSelects(){
   const opts=cachedStudents.map(s=>`<option value="${s.code}">${s.name}</option>`).join('');
-  ['aFilterStudent','examStudent','aFilterExamSt','aChartSt'].forEach(id=>{
+  ['aFilterStudent','aFilterExamSt','aChartSt'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
-    const prev=el.value;
-    el.innerHTML=(id==='examStudent'?'<option value="">انتخاب کنید</option>':'<option value="">همه</option>')+opts;
-    if(prev)el.value=prev;
+    const prev=el.value;el.innerHTML='<option value="">همه</option>'+opts;if(prev)el.value=prev;
   });
 }
 
-function aRenderReports() {
+function aRenderReports(){
   const fc=document.getElementById('aFilterStudent')?.value||'';
   const fd=document.getElementById('aFilterDate')?.value||'';
   let reports=[...cachedReports];
@@ -621,100 +851,116 @@ function aRenderReports() {
   const el=document.getElementById('aReportsList');
   if(!reports.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div>گزارشی یافت نشد</div>';return;}
   el.innerHTML=reports.map(r=>`<div class="report-row" onclick="openReportModal('${r.id}')">
-    <div><div style="font-size:14px;font-weight:700">${r.student_name}</div><div style="font-size:12px;color:var(--text-muted)">${fDate(r.date)}</div></div>
-    <div style="font-size:12px;color:var(--text-dim)">${toPNum(Math.floor(r.total_mins/60))}:${String(r.total_mins%60).padStart(2,'0')} ساعت</div>
-    <div style="font-size:12px;color:var(--text-dim)">${toPNum(r.total_tests)} تست</div>
+    <div style="min-width:90px"><div style="font-size:13px;font-weight:700">${r.student_name}</div><div style="font-size:11px;color:var(--text-muted)">${gregorianToJalaliStr(r.date)}</div></div>
+    <div style="font-size:11px;color:var(--text-dim)">⏱️ ${toPNum(Math.floor(r.total_mins/60))}:${String(r.total_mins%60).padStart(2,'0')} ساعت</div>
+    <div style="font-size:11px;color:var(--text-dim)">🎯 ${toPNum(r.total_tests)} تست</div>
+    <div style="font-size:11px;color:var(--text-dim)">📚 ${toPNum((typeof r.lessons==='string'?JSON.parse(r.lessons||'[]'):r.lessons||[]).length)} درس</div>
     ${satBadge(r.satisfaction)}
+    ${r.mood==='great'?'<span>🔥</span>':r.mood==='bad'?'<span>😞</span>':''}
   </div>`).join('');
 }
 
-function buildExamSubjGrid() {
-  const g=document.getElementById('examSubjGrid');if(!g)return;
-  g.innerHTML=SUBJECTS.map(s=>`<div class="form-group"><label>${s}</label><input type="number" class="exam-sp" data-s="${s}" min="0" max="100" placeholder="درصد"></div>`).join('');
-}
-
-async function addExam() {
-  const code=document.getElementById('examStudent').value;
-  const name=document.getElementById('examName').value.trim();
-  const type=document.getElementById('examType').value;
-  const date=document.getElementById('examDate').value;
-  const taraz=document.getElementById('examTaraz').value;
-  const rank=document.getElementById('examRank').value;
-  if(!code||!name||!date){showToast('دانش‌آموز، نام آزمون و تاریخ الزامیه','warn');return;}
-  const student=cachedStudents.find(s=>s.code===code);
-  const subjects={};
-  document.querySelectorAll('.exam-sp').forEach(inp=>{if(inp.value)subjects[inp.dataset.s]=parseFloat(inp.value);});
-  showLoading('در حال ثبت...');
-  const {error}=await db.from('exams').insert({student_code:code,student_name:student.name,exam_name:name,type,date,taraz:taraz?parseInt(taraz):null,rank:rank?parseInt(rank):null,subjects});
-  if(error){hideLoading();showToast('خطا: '+error.message,'warn');return;}
-  document.getElementById('examName').value='';document.getElementById('examTaraz').value='';document.getElementById('examRank').value='';
-  document.getElementById('examDate').valueAsDate=new Date();
-  document.querySelectorAll('.exam-sp').forEach(i=>i.value='');
-  await refreshAll();hideLoading();showToast('نتیجه آزمون ثبت شد ✅');
-}
-
-function aRenderExams() {
+function aRenderExams(){
   const fc=document.getElementById('aFilterExamSt')?.value||'';
   let exams=[...cachedExams];
   if(fc)exams=exams.filter(e=>e.student_code===fc);
   const el=document.getElementById('aExamsList');
   if(!exams.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏆</div>آزمونی ثبت نشده</div>';return;}
   el.innerHTML=`<div class="table-wrap"><table><thead><tr><th>دانش‌آموز</th><th>نام آزمون</th><th>نوع</th><th>تاریخ</th><th>تراز</th><th>رتبه</th><th></th></tr></thead><tbody>
-    ${exams.map(e=>`<tr><td><strong>${e.student_name}</strong></td><td>${e.exam_name}</td><td><span class="badge bg-blue">${e.type}</span></td><td>${fDate(e.date)}</td><td>${e.taraz?`<strong class="c-gold">${toPNum(e.taraz)}</strong>`:'—'}</td><td>${e.rank?`<strong class="c-purple">${toPNum(e.rank)}</strong>`:'—'}</td><td><button class="btn btn-outline btn-sm" onclick="openExamModal('${e.id}')">مشاهده</button></td></tr>`).join('')}
+    ${exams.map(e=>`<tr><td><strong>${e.student_name}</strong></td><td>${e.exam_name}</td><td><span class="badge bg-purple">${e.type}</span></td><td>${gregorianToJalaliStr(e.date)}</td><td>${e.taraz?`<strong class="c-gold">${toPNum(e.taraz)}</strong>`:'—'}</td><td>${e.rank?`<strong class="c-purple">${toPNum(e.rank)}</strong>`:'—'}</td><td><button class="btn btn-outline btn-sm" onclick="openExamModal('${e.id}')">مشاهده</button></td></tr>`).join('')}
   </tbody></table></div>`;
 }
 
-function aRenderCharts() {
+function aRenderCharts(){
   const code=document.getElementById('aChartSt').value;
   const area=document.getElementById('aChartsArea');
-  if(!code){area.innerHTML='<div class="empty" style="padding:60px"><div class="empty-icon">📊</div>یه دانش‌آموز انتخاب کن</div>';return;}
+  if(!code){area.innerHTML='<div class="empty" style="padding:50px"><div class="empty-icon">📊</div>یه دانش‌آموز انتخاب کن</div>';return;}
   renderChartsForCode(code,area,'a');
 }
 
 // ===== STUDENT APP =====
-async function initStudentApp() {
+async function initStudentApp(){
   showLoading('در حال بارگذاری...');
-  const [r,e] = await Promise.all([
+  const[r,e]=await Promise.all([
     db.from('reports').select('*').eq('student_code',currentStudent.code).order('created_at',{ascending:false}),
     db.from('exams').select('*').eq('student_code',currentStudent.code).order('created_at',{ascending:false})
   ]);
-  cachedReports = r.data||[];
-  cachedExams = e.data||[];
+  cachedReports=r.data||[];cachedExams=e.data||[];
   hideLoading();
+
   document.getElementById('sHeaderName').textContent=currentStudent.name;
-  document.getElementById('sHeaderCode').textContent='کد: '+currentStudent.code;
+  document.getElementById('sHeaderGrade').textContent=(currentStudent.grade||'')+(currentStudent.field?' | '+currentStudent.field:'');
   document.getElementById('sLogoIcon').textContent=currentStudent.name.charAt(0);
   document.getElementById('sDate').valueAsDate=new Date();
   document.getElementById('sQuote').innerHTML='💡 '+QUOTES[Math.floor(Math.random()*QUOTES.length)];
-  sRenderStreak();
-  document.getElementById('sLessonsContainer').innerHTML='';
-  sLessonCount=0;
+  document.getElementById('sExamDate')&&(document.getElementById('sExamDate').valueAsDate=new Date());
+  buildSExamSubjGrid();
+  sRenderHome();
   sAddLesson();sAddLesson();
   sUpdateSat(70);
 }
 
-function sShowPage(name,btn) {
+function sShowPage(name,btn){
   document.querySelectorAll('#studentApp .page-section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('#studentApp .nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('s-'+name).classList.add('active');
-  if(btn) btn.classList.add('active');
-  if(name==='history') sRenderHistory();
-  if(name==='exams') sRenderExams();
-  if(name==='progress') sRenderProgress();
+  if(btn)btn.classList.add('active');
+  if(name==='home')sRenderHome();
+  if(name==='history')sRenderHistory();
+  if(name==='exams')sRenderSExams();
+  if(name==='progress')sRenderProgress();
 }
 
-function sRenderStreak() {
-  let streak=0;const today=new Date();
-  for(let i=0;i<30;i++){
-    const d=new Date(today);d.setDate(d.getDate()-i);
-    const ds=d.toISOString().split('T')[0];
-    if(cachedReports.find(r=>r.date===ds))streak++;
-    else if(i>0)break;
+function sRenderHome(){
+  // Name & info
+  document.getElementById('shName').textContent=currentStudent.name;
+  document.getElementById('shGrade').innerHTML='📚 '+( currentStudent.grade||'—');
+  document.getElementById('shField').innerHTML='🎯 '+(currentStudent.field||'—');
+
+  // Countdowns
+  const dT=daysUntil(TAJROBI_DATE);
+  const dR=daysUntil(RIAZI_DATE);
+  document.getElementById('cdTajrobi').textContent=toPNum(Math.max(0,dT));
+  document.getElementById('cdRiazi').textContent=toPNum(Math.max(0,dR));
+  const jT=toJalali(TAJROBI_DATE.getFullYear(),TAJROBI_DATE.getMonth()+1,TAJROBI_DATE.getDate());
+  const jR=toJalali(RIAZI_DATE.getFullYear(),RIAZI_DATE.getMonth()+1,RIAZI_DATE.getDate());
+  document.getElementById('cdTajrobiDate').textContent=jalaliStr(jT.y,jT.m,jT.d);
+  document.getElementById('cdRiaziDate').textContent=jalaliStr(jR.y,jR.m,jR.d);
+
+  // Subscription status
+  const dLeft=subDaysLeft(currentStudent);
+  const expired=isSubExpired(currentStudent);
+  let subHtml='';
+  if(expired){
+    const abs=Math.abs(dLeft);
+    subHtml=`<div class="sub-status-box sub-bad"><div class="ssb-icon">🔴</div><div><div class="ssb-title">اشتراک مشاوره منقضی شده!</div><div class="ssb-sub">${toPNum(abs)} روز از تاریخ پرداخت گذشته — با مهدی باقریان تماس بگیر</div></div></div>`;
+  } else if(dLeft<=7){
+    const jU=toJalali(...currentStudent.sub_until.split('-'));
+    subHtml=`<div class="sub-status-box sub-warn"><div class="ssb-icon">⚠️</div><div><div class="ssb-title">اشتراک در حال اتمام</div><div class="ssb-sub">${toPNum(dLeft)} روز مانده — تا ${jalaliStr(jU.y,jU.m,jU.d)} اعتبار داری</div></div></div>`;
+  } else {
+    const jU=toJalali(...currentStudent.sub_until.split('-'));
+    subHtml=`<div class="sub-status-box sub-ok"><div class="ssb-icon">✅</div><div><div class="ssb-title">اشتراک فعال</div><div class="ssb-sub">${toPNum(dLeft)} روز مانده — تا ${jalaliStr(jU.y,jU.m,jU.d)}</div></div></div>`;
   }
-  document.getElementById('sStreakBox').innerHTML=`<div style="font-size:32px">🔥</div><div style="flex:1"><div style="font-size:24px;font-weight:900;color:var(--gold)">${toPNum(streak)} روز</div><div style="font-size:12px;color:var(--text-muted)">استریک مطالعه متوالی</div></div><div style="font-size:12px;color:var(--text-muted)">${streak>=7?'🏅 هفته‌ای!':streak>=3?'⚡ عالیه!':'ادامه بده!'}</div>`;
+  document.getElementById('subStatusBox').innerHTML=subHtml;
+
+  // Streak
+  let streak=0;const today=new Date();
+  for(let i=0;i<30;i++){const d=new Date(today);d.setDate(d.getDate()-i);const ds=d.toISOString().split('T')[0];if(cachedReports.find(r=>r.date===ds))streak++;else if(i>0)break;}
+  document.getElementById('sStreakBox').innerHTML=`<div style="font-size:30px">🔥</div><div style="flex:1"><div style="font-size:22px;font-weight:900;color:var(--gold)">${toPNum(streak)} روز</div><div style="font-size:11px;color:var(--text-muted)">استریک مطالعه متوالی</div></div><div style="font-size:12px;color:var(--text-muted);text-align:left">${streak>=7?'🏅 هفته‌ای!':streak>=3?'⚡ عالیه!':'ادامه بده!'}</div>`;
+
+  // Week stats
+  const weekAgo=new Date();weekAgo.setDate(weekAgo.getDate()-7);
+  const weekStr=weekAgo.toISOString().split('T')[0];
+  const wr=cachedReports.filter(r=>r.date>=weekStr);
+  const wMins=wr.reduce((s,r)=>s+r.total_mins,0);
+  const wTests=wr.reduce((s,r)=>s+r.total_tests,0);
+  document.getElementById('sWeekStats').innerHTML=`
+    <div class="stat-card"><div class="stat-num c-purple" style="font-size:20px">${toPNum(wr.length)}</div><div class="stat-lbl">گزارش این هفته</div></div>
+    <div class="stat-card"><div class="stat-num c-cyan" style="font-size:20px">${toPNum(Math.floor(wMins/60))}:${String(wMins%60).padStart(2,'0')}</div><div class="stat-lbl">ساعت مطالعه</div></div>
+    <div class="stat-card"><div class="stat-num c-gold" style="font-size:20px">${toPNum(wTests)}</div><div class="stat-lbl">تست زده</div></div>`;
 }
 
-function sAddLesson() {
+function sAddLesson(){
   sLessonCount++;const id='sl'+sLessonCount;
   const div=document.createElement('div');div.className='lesson-row';div.id=id;
   div.innerHTML=`<button class="rm-btn" onclick="sRemoveLesson('${id}')">✕</button>
@@ -723,25 +969,21 @@ function sAddLesson() {
       <div class="form-group"><label>نوع</label><select class="ls-type" onchange="sToggleType(this,'${id}')"><option value="study">📖 مطالعه</option><option value="test">🎯 تست</option><option value="both">📖+🎯 هر دو</option></select></div>
       <div class="form-group"><label>دقیقه</label><input type="number" class="ls-mins" min="0" placeholder="۰" oninput="sUpdateSummary()"></div>
     </div>
-    <div class="lesson-bot" id="lbot-${id}">
+    <div class="lesson-bot" id="lbot-${id}" style="display:none">
       <div class="form-group"><label>تعداد تست</label><input type="number" class="ls-total" min="0" placeholder="۰" oninput="sUpdateSummary()"></div>
       <div class="form-group"><label>✅ درست</label><input type="number" class="ls-correct" min="0" placeholder="۰" oninput="sUpdateSummary()"></div>
       <div class="form-group"><label>❌ غلط</label><input type="number" class="ls-wrong" min="0" placeholder="۰" oninput="sUpdateSummary()"></div>
       <div class="form-group"><label>⬜ نزده</label><input type="number" class="ls-skip" min="0" placeholder="۰" oninput="sUpdateSummary()"></div>
-    </div>`;
-  document.getElementById('sLessonsContainer').appendChild(div);
-  sToggleType(div.querySelector('.ls-type'),id);sUpdateSummary();
+    </div>
+    <div class="form-group lesson-note"><label>💬 توضیحات این درس</label><input type="text" class="ls-note" placeholder="مثلاً: فصل ۳ رو تموم کردم، هنوز با مبحث x مشکل دارم"></div>`;
+  document.getElementById('sLessonsContainer').appendChild(div);sUpdateSummary();
 }
 
 function sRemoveLesson(id){document.getElementById(id)?.remove();sUpdateSummary();}
 function sToggleType(sel,id){const b=document.getElementById('lbot-'+id);if(b)b.style.display=sel.value==='study'?'none':'grid';sUpdateSummary();}
 function sUpdateSummary(){
   let tm=0,tt=0,tc=0;
-  document.querySelectorAll('#sLessonsContainer .lesson-row').forEach(row=>{
-    tm+=parseInt(row.querySelector('.ls-mins')?.value||0);
-    tt+=parseInt(row.querySelector('.ls-total')?.value||0);
-    tc+=parseInt(row.querySelector('.ls-correct')?.value||0);
-  });
+  document.querySelectorAll('#sLessonsContainer .lesson-row').forEach(row=>{tm+=parseInt(row.querySelector('.ls-mins')?.value||0);tt+=parseInt(row.querySelector('.ls-total')?.value||0);tc+=parseInt(row.querySelector('.ls-correct')?.value||0);});
   const h=Math.floor(tm/60),m=tm%60;
   document.getElementById('sSumH').textContent=`${toPNum(h)}:${toPNum(m).padStart(2,'۰')}`;
   document.getElementById('sSumT').textContent=toPNum(tt);
@@ -749,7 +991,7 @@ function sUpdateSummary(){
 }
 function sUpdateSat(v){document.getElementById('sSatV').textContent=toPNum(v)+'٪';document.getElementById('sSatE').textContent=v>=85?'🤩':v>=65?'😊':v>=45?'😐':v>=25?'😕':'😞';}
 
-async function sSubmitReport() {
+async function sSubmitReport(){
   const date=document.getElementById('sDate').value;
   if(!date){showToast('تاریخ رو وارد کن','warn');return;}
   const lessons=[];let tm=0,tt=0;
@@ -759,50 +1001,66 @@ async function sSubmitReport() {
     const correct=parseInt(row.querySelector('.ls-correct')?.value||0);
     const wrong=parseInt(row.querySelector('.ls-wrong')?.value||0);
     const skip=parseInt(row.querySelector('.ls-skip')?.value||0);
+    const note=row.querySelector('.ls-note')?.value||'';
     tm+=mins;tt+=total;
-    lessons.push({name:row.querySelector('.ls-name').value,type:row.querySelector('.ls-type').value,mins,total,correct,wrong,skip});
+    lessons.push({name:row.querySelector('.ls-name').value,type:row.querySelector('.ls-type').value,mins,total,correct,wrong,skip,note});
   });
-  const btn=document.getElementById('sSubmitBtn');
-  btn.disabled=true;btn.textContent='در حال ثبت...';
-  const {error}=await db.from('reports').insert({
-    student_code:currentStudent.code,student_name:currentStudent.name,
-    date,mood:document.getElementById('sMood').value,
-    lessons:JSON.stringify(lessons),total_mins:tm,total_tests:tt,
-    satisfaction:parseInt(document.getElementById('sSatS').value),
-    notes:document.getElementById('sNotes').value
-  });
+  const btn=document.getElementById('sSubmitBtn');btn.disabled=true;btn.textContent='در حال ثبت...';
+  const{error}=await db.from('reports').insert({student_code:currentStudent.code,student_name:currentStudent.name,date,mood:document.getElementById('sMood').value,lessons:JSON.stringify(lessons),total_mins:tm,total_tests:tt,satisfaction:parseInt(document.getElementById('sSatS').value),notes:document.getElementById('sNotes').value});
   btn.disabled=false;btn.textContent='✅ ثبت گزارش امروز';
-  if(error){showToast('خطا در ثبت: '+error.message,'warn');return;}
-  // refresh
-  const {data}=await db.from('reports').select('*').eq('student_code',currentStudent.code).order('created_at',{ascending:false});
+  if(error){showToast('خطا: '+error.message,'warn');return;}
+  const{data}=await db.from('reports').select('*').eq('student_code',currentStudent.code).order('created_at',{ascending:false});
   cachedReports=data||[];
   showToast('گزارش امروزت ثبت شد ✅');
-  document.getElementById('sDate').valueAsDate=new Date();
-  document.getElementById('sNotes').value='';
-  document.getElementById('sSatS').value=70;sUpdateSat(70);
+  document.getElementById('sDate').valueAsDate=new Date();document.getElementById('sNotes').value='';document.getElementById('sSatS').value=70;sUpdateSat(70);
   document.getElementById('sLessonsContainer').innerHTML='';sLessonCount=0;sAddLesson();sAddLesson();sUpdateSummary();
-  sRenderStreak();
 }
 
 function sRenderHistory(){
   const el=document.getElementById('sHistoryList');
   if(!cachedReports.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div>هنوز گزارشی ثبت نکردی</div>';return;}
   el.innerHTML=cachedReports.map(r=>`<div class="report-row" onclick="openReportModal('${r.id}')">
-    <div style="font-size:14px;font-weight:700;min-width:80px">${fDate(r.date)}</div>
-    <div style="font-size:12px;color:var(--text-dim)">${toPNum(Math.floor(r.total_mins/60))}:${String(r.total_mins%60).padStart(2,'0')} ساعت</div>
-    <div style="font-size:12px;color:var(--text-dim)">${toPNum(r.total_tests)} تست</div>
+    <div style="min-width:90px"><div style="font-size:13px;font-weight:700">${gregorianToJalaliStr(r.date)}</div><div style="font-size:11px;color:var(--text-muted)">${r.mood==='great'?'🔥 خیلی خوب':r.mood==='good'?'😊 خوب':r.mood==='ok'?'😐 معمولی':'😞 بد'}</div></div>
+    <div style="font-size:11px;color:var(--text-dim)">⏱️ ${toPNum(Math.floor(r.total_mins/60))}:${String(r.total_mins%60).padStart(2,'0')} ساعت</div>
+    <div style="font-size:11px;color:var(--text-dim)">🎯 ${toPNum(r.total_tests)} تست</div>
     ${satBadge(r.satisfaction)}
   </div>`).join('');
 }
 
-async function sRenderExams(){
-  const {data}=await db.from('exams').select('*').eq('student_code',currentStudent.code).order('created_at',{ascending:false});
-  cachedExams=data||[];
+// STUDENT EXAMS
+function buildSExamSubjGrid(){
+  const g=document.getElementById('sExamSubjGrid');if(!g)return;
+  g.innerHTML=SUBJECTS.map(s=>`<div class="form-group"><label>${s}</label><input type="number" class="s-exam-sp" data-s="${s}" min="0" max="100" placeholder="درصد"></div>`).join('');
+}
+
+async function sAddExam(){
+  const name=document.getElementById('sExamName').value.trim();
+  const type=document.getElementById('sExamType').value;
+  const date=document.getElementById('sExamDate').value;
+  const taraz=document.getElementById('sExamTaraz').value;
+  const rank=document.getElementById('sExamRank').value;
+  if(!name||!date){showToast('نام آزمون و تاریخ الزامیه','warn');return;}
+  const subjects={};document.querySelectorAll('.s-exam-sp').forEach(inp=>{if(inp.value)subjects[inp.dataset.s]=parseFloat(inp.value);});
+  const btn=document.getElementById('sExamSubmitBtn');btn.disabled=true;btn.textContent='در حال ثبت...';
+  const{error}=await db.from('exams').insert({student_code:currentStudent.code,student_name:currentStudent.name,exam_name:name,type,date,taraz:taraz?parseInt(taraz):null,rank:rank?parseInt(rank):null,subjects:JSON.stringify(subjects)});
+  btn.disabled=false;btn.textContent='✅ ثبت نتیجه';
+  if(error){showToast('خطا: '+error.message,'warn');return;}
+  document.getElementById('sExamName').value='';document.getElementById('sExamTaraz').value='';document.getElementById('sExamRank').value='';
+  document.getElementById('sExamDate').valueAsDate=new Date();
+  document.querySelectorAll('.s-exam-sp').forEach(i=>i.value='');
+  const{data}=await db.from('exams').select('*').eq('student_code',currentStudent.code).order('created_at',{ascending:false});
+  cachedExams=data||[];sRenderSExams();showToast('نتیجه آزمون ثبت شد ✅');
+}
+
+function sRenderSExams(){
   const el=document.getElementById('sExamsList');
-  if(!cachedExams.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏆</div>مشاورت هنوز آزمونی ثبت نکرده</div>';return;}
-  el.innerHTML=`<div class="table-wrap"><table><thead><tr><th>نام آزمون</th><th>نوع</th><th>تاریخ</th><th>تراز</th><th>رتبه</th><th></th></tr></thead><tbody>
-    ${cachedExams.map(e=>`<tr><td><strong>${e.exam_name}</strong></td><td><span class="badge bg-blue">${e.type}</span></td><td>${fDate(e.date)}</td><td>${e.taraz?`<strong class="c-gold">${toPNum(e.taraz)}</strong>`:'—'}</td><td>${e.rank?`<strong class="c-purple">${toPNum(e.rank)}</strong>`:'—'}</td><td><button class="badge bg-cyan" style="cursor:pointer;border:none" onclick="openExamModal('${e.id}')">جزئیات</button></td></tr>`).join('')}
-  </tbody></table></div>`;
+  if(!cachedExams.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏆</div>هنوز آزمونی ثبت نکردی</div>';return;}
+  el.innerHTML=cachedExams.map(e=>`<div class="report-row" onclick="openExamModal('${e.id}')">
+    <div style="flex:1"><div style="font-size:13px;font-weight:700">${e.exam_name}</div><div style="font-size:11px;color:var(--text-muted)">${gregorianToJalaliStr(e.date)}</div></div>
+    <span class="badge bg-purple">${e.type}</span>
+    ${e.taraz?`<span class="badge bg-gold" style="background:rgba(245,158,11,0.15);color:var(--gold)">تراز ${toPNum(e.taraz)}</span>`:''}
+    ${e.rank?`<span class="badge bg-cyan">رتبه ${toPNum(e.rank)}</span>`:''}
+  </div>`).join('');
 }
 
 function sRenderProgress(){renderChartsForCode(currentStudent.code,document.getElementById('sProgressArea'),'s');}
@@ -812,28 +1070,28 @@ function renderChartsForCode(code,area,prefix){
   const reports=[...cachedReports].filter(r=>r.student_code===code).sort((a,b)=>a.date.localeCompare(b.date));
   const exams=[...cachedExams].filter(e=>e.student_code===code).sort((a,b)=>a.date.localeCompare(b.date));
   let html='';
-  html+=`<div class="card"><div class="card-title" style="margin-bottom:14px"><div class="ibox ib-blue">⏱️</div>ساعت مطالعه روزانه</div><div class="chart-box"><canvas id="${prefix}c1" height="160"></canvas></div></div>`;
-  html+=`<div class="card"><div class="card-title" style="margin-bottom:14px"><div class="ibox ib-gold">😊</div>رضایت روزانه</div><div class="chart-box"><canvas id="${prefix}c2" height="160"></canvas></div></div>`;
-  html+=`<div class="card"><div class="card-title" style="margin-bottom:14px"><div class="ibox ib-purple">🎯</div>تعداد تست روزانه</div><div class="chart-box"><canvas id="${prefix}c3" height="160"></canvas></div></div>`;
-  if(exams.filter(e=>e.taraz).length>0)html+=`<div class="card"><div class="card-title" style="margin-bottom:14px"><div class="ibox ib-green">📐</div>روند تراز</div><div class="chart-box"><canvas id="${prefix}c4" height="160"></canvas></div></div>`;
+  html+=`<div class="card"><div class="card-title" style="margin-bottom:12px"><div class="ibox ib-purple">⏱️</div>ساعت مطالعه روزانه</div><div class="chart-box"><canvas id="${prefix}c1" height="160"></canvas></div></div>`;
+  html+=`<div class="card"><div class="card-title" style="margin-bottom:12px"><div class="ibox ib-gold">😊</div>رضایت روزانه</div><div class="chart-box"><canvas id="${prefix}c2" height="160"></canvas></div></div>`;
+  html+=`<div class="card"><div class="card-title" style="margin-bottom:12px"><div class="ibox ib-cyan">🎯</div>تعداد تست روزانه</div><div class="chart-box"><canvas id="${prefix}c3" height="160"></canvas></div></div>`;
+  if(exams.filter(e=>e.taraz).length>0)html+=`<div class="card"><div class="card-title" style="margin-bottom:12px"><div class="ibox ib-green">📐</div>روند تراز</div><div class="chart-box"><canvas id="${prefix}c4" height="160"></canvas></div></div>`;
   const allSubj=new Set();exams.forEach(e=>{const s=typeof e.subjects==='string'?JSON.parse(e.subjects||'{}'):e.subjects||{};Object.keys(s).forEach(k=>allSubj.add(k));});
   if(allSubj.size){
-    html+=`<div class="card"><div class="card-title" style="margin-bottom:16px"><div class="ibox ib-cyan">📚</div>روند درصد هر درس</div>`;
-    allSubj.forEach(subj=>{html+=`<div style="margin-bottom:12px"><div style="font-size:13px;font-weight:700;color:var(--text-dim);margin-bottom:8px">${subj}</div><div class="chart-box"><canvas id="${prefix}cs_${subj.replace(/[\s‌]/g,'_')}" height="110"></canvas></div></div>`;});
+    html+=`<div class="card"><div class="card-title" style="margin-bottom:14px"><div class="ibox ib-cyan">📚</div>روند درصد هر درس در آزمون‌ها</div>`;
+    allSubj.forEach(subj=>{html+=`<div style="margin-bottom:11px"><div style="font-size:12px;font-weight:700;color:var(--text-dim);margin-bottom:7px">${subj}</div><div class="chart-box"><canvas id="${prefix}cs_${subj.replace(/[\s‌]/g,'_')}" height="110"></canvas></div></div>`;});
     html+=`</div>`;
   }
   area.innerHTML=html;
   const cmap={'زیست‌شناسی':'#10b981','شیمی':'#3b82f6','فیزیک':'#f59e0b','ریاضی':'#ef4444','ادبیات':'#8b5cf6','عربی':'#f97316','دین و زندگی':'#06b6d4','زبان انگلیسی':'#ec4899'};
   setTimeout(()=>{
-    const rl=reports.map(r=>fDate(r.date));
-    drawLine(prefix+'c1',rl,reports.map(r=>+(r.total_mins/60).toFixed(1)),'#3b82f6');
+    const rl=reports.map(r=>gregorianToJalaliStr(r.date).replace(/\s/g,'\n'));
+    drawLine(prefix+'c1',rl,reports.map(r=>+(r.total_mins/60).toFixed(1)),'#a855f7');
     drawLine(prefix+'c2',rl,reports.map(r=>r.satisfaction),'#f59e0b');
-    drawLine(prefix+'c3',rl,reports.map(r=>r.total_tests),'#8b5cf6');
-    if(document.getElementById(prefix+'c4')){const te=exams.filter(e=>e.taraz);drawLine(prefix+'c4',te.map(e=>e.exam_name.slice(0,10)),te.map(e=>e.taraz),'#10b981');}
+    drawLine(prefix+'c3',rl,reports.map(r=>r.total_tests),'#06b6d4');
+    if(document.getElementById(prefix+'c4')){const te=exams.filter(e=>e.taraz);drawLine(prefix+'c4',te.map(e=>e.exam_name.slice(0,8)),te.map(e=>e.taraz),'#10b981');}
     allSubj.forEach(subj=>{
       const cid=prefix+'cs_'+subj.replace(/[\s‌]/g,'_');
       const se=exams.filter(e=>{const s=typeof e.subjects==='string'?JSON.parse(e.subjects||'{}'):e.subjects||{};return subj in s;});
-      drawLine(cid,se.map(e=>e.exam_name.slice(0,8)),se.map(e=>{const s=typeof e.subjects==='string'?JSON.parse(e.subjects||'{}'):e.subjects||{};return s[subj];}),cmap[subj]||'#94a3b8');
+      drawLine(cid,se.map(e=>e.exam_name.slice(0,7)),se.map(e=>{const s=typeof e.subjects==='string'?JSON.parse(e.subjects||'{}'):e.subjects||{};return s[subj];}),cmap[subj]||'#94a3b8');
     });
   },60);
 }
@@ -841,40 +1099,55 @@ function renderChartsForCode(code,area,prefix){
 // ===== MODALS =====
 function openReportModal(id){
   const r=cachedReports.find(x=>String(x.id)===String(id));if(!r)return;
-  document.getElementById('rMTitle').textContent=`${r.student_name} — ${fDate(r.date)}`;
+  document.getElementById('rMTitle').textContent=`${r.student_name} — ${gregorianToJalaliStr(r.date)}`;
   const h=Math.floor(r.total_mins/60),m=r.total_mins%60;
   const lessons=typeof r.lessons==='string'?JSON.parse(r.lessons||'[]'):r.lessons||[];
+  const moodLabel=r.mood==='great'?'🔥 خیلی خوب':r.mood==='good'?'😊 خوب':r.mood==='ok'?'😐 معمولی':'😞 بد';
   document.getElementById('rMContent').innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">
-      <div class="sum-card"><div class="sum-val c-blue" style="font-size:20px">${toPNum(h)}:${String(m).padStart(2,'0')}</div><div class="sum-lbl">ساعت</div></div>
-      <div class="sum-card"><div class="sum-val c-cyan" style="font-size:20px">${toPNum(r.total_tests)}</div><div class="sum-lbl">تست</div></div>
+    <div class="report-detail-grid">
+      <div class="sum-card"><div class="sum-val c-purple" style="font-size:20px">${toPNum(h)}:${String(m).padStart(2,'0')}</div><div class="sum-lbl">ساعت مطالعه</div></div>
+      <div class="sum-card"><div class="sum-val c-cyan" style="font-size:20px">${toPNum(r.total_tests)}</div><div class="sum-lbl">مجموع تست</div></div>
       <div class="sum-card"><div class="sum-val" style="font-size:20px;color:${r.satisfaction>=70?'var(--success)':r.satisfaction>=40?'var(--gold)':'var(--danger)'}">${toPNum(r.satisfaction)}٪</div><div class="sum-lbl">رضایت</div></div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
-      ${lessons.map(l=>`<div style="background:var(--surface2);padding:10px 14px;border-radius:9px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;flex-wrap:wrap">
-        <div style="font-weight:700;color:var(--accent)">${l.name}</div>
-        <div style="color:var(--text-dim)">${toPNum(l.mins)} دقیقه</div>
-        <span class="badge bg-green">✅${toPNum(l.correct||0)}</span>
-        <span class="badge bg-red">❌${toPNum(l.wrong||0)}</span>
-        <span class="badge" style="background:rgba(100,116,139,0.2);color:var(--text-muted)">⬜${toPNum(l.skip||0)}</span>
-      </div>`).join('')}
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:8px 12px;background:var(--surface2);border-radius:8px">
+      <span style="font-size:12px;color:var(--text-muted)">وضعیت روز:</span>
+      <strong style="font-size:13px">${moodLabel}</strong>
     </div>
-    ${r.notes?`<div style="background:var(--surface2);padding:12px;border-radius:9px;font-size:13px;color:var(--text-dim);line-height:1.7">💬 ${r.notes}</div>`:''}`;
+    <div style="font-size:12px;font-weight:700;color:var(--text-dim);margin-bottom:10px">📚 جزئیات درس‌ها:</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+      ${lessons.map(l=>`
+        <div class="report-lesson-card">
+          <div class="rlc-name">
+            📖 ${l.name}
+            <span class="badge bg-purple" style="font-size:10px">${l.type==='study'?'مطالعه':l.type==='test'?'تست':'مطالعه+تست'}</span>
+          </div>
+          <div class="rlc-stats">
+            <span class="badge bg-cyan">⏱️ ${toPNum(l.mins)} دقیقه</span>
+            ${l.total>0?`<span class="badge bg-blue">📝 ${toPNum(l.total)} تست</span>`:''}
+            ${l.correct>0?`<span class="badge bg-green">✅ ${toPNum(l.correct)} درست</span>`:''}
+            ${l.wrong>0?`<span class="badge bg-red">❌ ${toPNum(l.wrong)} غلط</span>`:''}
+            ${l.skip>0?`<span class="badge" style="background:rgba(100,116,139,0.2);color:var(--text-muted)">⬜ ${toPNum(l.skip)} نزده</span>`:''}
+            ${l.total>0?`<span class="badge bg-amber">📊 ${toPNum(Math.round((l.correct||0)/l.total*100))}٪</span>`:''}
+          </div>
+          ${l.note?`<div class="rlc-note">💬 ${l.note}</div>`:''}
+        </div>`).join('')}
+    </div>
+    ${r.notes?`<div style="background:var(--surface2);padding:12px;border-radius:9px;font-size:12px;color:var(--text-dim);line-height:1.7;border:1px solid var(--border2)"><strong style="color:var(--text-dim)">📝 یادداشت کلی:</strong><br>${r.notes}</div>`:''}`;
   document.getElementById('reportModal').classList.add('open');
 }
 
 function openExamModal(id){
   const e=cachedExams.find(x=>String(x.id)===String(id));if(!e)return;
-  document.getElementById('eMTitle').textContent=e.exam_name;
+  document.getElementById('eMTitle').textContent=`${e.student_name} — ${e.exam_name}`;
   const subjs=Object.entries(typeof e.subjects==='string'?JSON.parse(e.subjects||'{}'):e.subjects||{});
   document.getElementById('eMContent').innerHTML=`
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px">
-      <span class="badge bg-blue">${e.type}</span>
-      <span class="badge bg-cyan">📅 ${fDate(e.date)}</span>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px">
+      <span class="badge bg-purple">${e.type}</span>
+      <span class="badge bg-cyan">📅 ${gregorianToJalaliStr(e.date)}</span>
       ${e.taraz?`<span class="badge bg-amber">📐 تراز ${toPNum(e.taraz)}</span>`:''}
-      ${e.rank?`<span class="badge bg-purple">🏅 رتبه ${toPNum(e.rank)}</span>`:''}
+      ${e.rank?`<span class="badge bg-blue">🏅 رتبه ${toPNum(e.rank)}</span>`:''}
     </div>
-    ${subjs.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px">${subjs.map(([s,p])=>`<div style="background:var(--surface2);padding:12px;border-radius:10px;text-align:center"><div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">${s}</div><div style="font-size:20px;font-weight:800;color:${p>=60?'var(--success)':p>=40?'var(--gold)':'var(--danger)'}">${toPNum(p)}٪</div></div>`).join('')}</div>`:'<div style="color:var(--text-muted)">درصد ثبت نشده</div>'}`;
+    ${subjs.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:9px">${subjs.map(([s,p])=>`<div style="background:var(--surface2);padding:12px;border-radius:9px;text-align:center;border:1px solid var(--border2)"><div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">${s}</div><div style="font-size:22px;font-weight:800;color:${p>=60?'var(--success)':p>=40?'var(--gold)':'var(--danger)'}">${toPNum(p)}٪</div></div>`).join('')}</div>`:'<div style="color:var(--text-muted);text-align:center;padding:20px">درصد درسی ثبت نشده</div>'}`;
   document.getElementById('examModal').classList.add('open');
 }
 
@@ -882,36 +1155,47 @@ function openStudentModal(code){
   const s=cachedStudents.find(x=>x.code===code);if(!s)return;
   const sr=cachedReports.filter(r=>r.student_code===code);
   const se=cachedExams.filter(e=>e.student_code===code);
+  const dLeft=subDaysLeft(s);
+  const expired=isSubExpired(s);
+  const subText=expired?`🔴 منقضی — ${toPNum(Math.abs(dLeft))} روز پیش گذشته`:`✅ ${toPNum(dLeft)} روز مانده`;
+  const jSub=s.sub_until?toJalali(...s.sub_until.split('-')):null;
   document.getElementById('stMTitle').textContent=s.name;
   document.getElementById('stMContent').innerHTML=`
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-      <div>کد: <span class="code-tag" onclick="copyCode('${s.code}')">${s.code}</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+      <span class="badge bg-purple">${s.grade||'—'}</span>
+      <span class="badge bg-cyan">${s.field||'—'}</span>
+      <span class="code-tag" onclick="copyCode('${s.code}')">${s.code}</span>
       <button class="btn btn-danger btn-sm" onclick="deleteStudent('${s.code}')">🗑️ حذف</button>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
-      <div class="sum-card"><div class="sum-val c-blue" style="font-size:20px">${toPNum(sr.length)}</div><div class="sum-lbl">گزارش</div></div>
-      <div class="sum-card"><div class="sum-val c-gold" style="font-size:20px">${toPNum(se.length)}</div><div class="sum-lbl">آزمون</div></div>
+    <div style="background:${expired?'rgba(239,68,68,0.08)':'rgba(16,185,129,0.08)'};border:1px solid ${expired?'rgba(239,68,68,0.3)':'rgba(16,185,129,0.25)'};border-radius:10px;padding:12px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:700;margin-bottom:4px">${subText}</div>
+      ${jSub?`<div style="font-size:11px;color:var(--text-muted)">تاریخ انقضا: ${jalaliStr(jSub.y,jSub.m,jSub.d)}</div>`:''}
     </div>
-    ${sr.slice(0,3).map(r=>`<div class="report-row" onclick="closeModal('studentModal');openReportModal('${r.id}')" style="margin-bottom:8px">
-      <div style="font-size:13px;font-weight:700">${fDate(r.date)}</div>
-      <div style="font-size:12px;color:var(--text-dim)">${toPNum(Math.floor(r.total_mins/60))}:${String(r.total_mins%60).padStart(2,'0')} ساعت</div>
+    <div style="font-size:12px;font-weight:700;color:var(--text-dim);margin-bottom:8px">🔄 تمدید اشتراک:</div>
+    <div class="renew-box">
+      <input type="number" id="renewDays" placeholder="تعداد روز" min="1" value="30" style="width:100px;text-align:center">
+      <button class="btn btn-gold" onclick="renewSubscription('${s.code}',document.getElementById('renewDays').value)">💰 تمدید</button>
+      <button class="btn btn-success btn-sm" onclick="document.getElementById('renewDays').value=30">۳۰ روز</button>
+      <button class="btn btn-success btn-sm" onclick="document.getElementById('renewDays').value=7">۷ روز</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0">
+      <div class="sum-card"><div class="sum-val c-purple" style="font-size:18px">${toPNum(sr.length)}</div><div class="sum-lbl">گزارش</div></div>
+      <div class="sum-card"><div class="sum-val c-gold" style="font-size:18px">${toPNum(se.length)}</div><div class="sum-lbl">آزمون</div></div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:var(--text-dim);margin-bottom:8px">آخرین گزارش‌ها:</div>
+    ${sr.slice(0,3).map(r=>`<div class="report-row" onclick="closeModal('studentModal');openReportModal('${r.id}')" style="margin-bottom:6px">
+      <div style="font-size:12px;font-weight:700">${gregorianToJalaliStr(r.date)}</div>
+      <div style="font-size:11px;color:var(--text-dim)">⏱️ ${toPNum(Math.floor(r.total_mins/60))}:${String(r.total_mins%60).padStart(2,'0')}</div>
       ${satBadge(r.satisfaction)}
     </div>`).join('')}`;
   document.getElementById('studentModal').classList.add('open');
 }
 
 async function deleteStudent(code){
-  if(!confirm('مطمئنی؟ تمام داده‌هاش هم حذف میشه'))return;
+  if(!confirm('مطمئنی؟ تمام داده‌ها حذف میشه'))return;
   showLoading('در حال حذف...');
-  await Promise.all([
-    db.from('students').delete().eq('code',code),
-    db.from('reports').delete().eq('student_code',code),
-    db.from('exams').delete().eq('student_code',code)
-  ]);
-  closeModal('studentModal');
-  await refreshAll();
-  hideLoading();
-  showToast('دانش‌آموز حذف شد');
+  await Promise.all([db.from('students').delete().eq('code',code),db.from('reports').delete().eq('student_code',code),db.from('exams').delete().eq('student_code',code)]);
+  closeModal('studentModal');await refreshAll();hideLoading();showToast('دانش‌آموز حذف شد');
 }
 
 function copyCode(code){navigator.clipboard.writeText(code).catch(()=>{});showToast(`کد ${code} کپی شد`);}
@@ -931,19 +1215,25 @@ function drawLine(canvasId,labels,data,color){
   const toY=v=>pad.top+cH-(v/max)*cH;
   ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;
   for(let i=0;i<=4;i++){const y=pad.top+cH*(1-i/4);ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(pad.left+cW,y);ctx.stroke();ctx.fillStyle='#64748b';ctx.font='9px Vazirmatn';ctx.textAlign='right';ctx.fillText((max*i/4).toFixed(0),pad.left-4,y+3);}
-  if(n>1){const g=ctx.createLinearGradient(0,pad.top,0,pad.top+cH);g.addColorStop(0,color+'30');g.addColorStop(1,color+'00');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(toX(0),toY(data[0]));for(let i=1;i<n;i++)ctx.lineTo(toX(i),toY(data[i]));ctx.lineTo(toX(n-1),pad.top+cH);ctx.lineTo(toX(0),pad.top+cH);ctx.closePath();ctx.fill();}
-  ctx.strokeStyle=color;ctx.lineWidth=2;ctx.lineJoin='round';ctx.beginPath();data.forEach((d,i)=>{if(i===0)ctx.moveTo(toX(i),toY(d));else ctx.lineTo(toX(i),toY(d));});ctx.stroke();
-  data.forEach((d,i)=>{const x=toX(i),y=toY(d);ctx.fillStyle='#070b14';ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fill();ctx.fillStyle='#64748b';ctx.font='9px Vazirmatn';ctx.textAlign='center';ctx.fillText(labels[i]||'',x,H-6);ctx.fillStyle=color;ctx.font='bold 9px Vazirmatn';ctx.fillText(toPNum(d),x,y-8);});
+  if(n>1){const g=ctx.createLinearGradient(0,pad.top,0,pad.top+cH);g.addColorStop(0,color+'35');g.addColorStop(1,color+'00');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(toX(0),toY(data[0]));for(let i=1;i<n;i++)ctx.lineTo(toX(i),toY(data[i]));ctx.lineTo(toX(n-1),pad.top+cH);ctx.lineTo(toX(0),pad.top+cH);ctx.closePath();ctx.fill();}
+  ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.beginPath();data.forEach((d,i)=>{if(i===0)ctx.moveTo(toX(i),toY(d));else ctx.lineTo(toX(i),toY(d));});ctx.stroke();
+  data.forEach((d,i)=>{const x=toX(i),y=toY(d);ctx.fillStyle='#06080f';ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#64748b';ctx.font='9px Vazirmatn';ctx.textAlign='center';ctx.fillText((labels[i]||'').split('\n')[0],x,H-6);ctx.fillStyle=color;ctx.font='bold 10px Vazirmatn';ctx.fillText(toPNum(d),x,y-9);});
 }
 
 // ===== HELPERS =====
 function toPNum(n){return String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])}
-function fDate(d){if(!d)return'';const[y,m,day]=d.split('-');return`${toPNum(day)}/${toPNum(m)}/${toPNum(y)}`}
 function satBadge(v){const c=v>=70?'bg-green':v>=40?'bg-amber':'bg-red';return`<span class="badge ${c}">${toPNum(v)}٪</span>`}
-function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.style.background=type==='warn'?'var(--warning)':'var(--success)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.style.background=type==='warn'?'var(--warning)':'var(--success)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
 
-// ===== START =====
-initDB();
+// ===== INIT =====
+(async()=>{
+  showLoading('در حال اتصال...');
+  try{
+    const[s,r,e]=await Promise.all([db.from('students').select('*'),db.from('reports').select('*'),db.from('exams').select('*')]);
+    cachedStudents=s.data||[];cachedReports=r.data||[];cachedExams=e.data||[];
+  }catch(err){console.log(err);}
+  hideLoading();
+})();
 </script>
 </body>
 </html>
