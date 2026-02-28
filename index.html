@@ -413,6 +413,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
             <option value="انسانی">انسانی</option><option value="هنر">هنر</option>
           </select>
         </div>
+        <div class="form-group"><label>📅 تاریخ انقضای اشتراک (اختیاری)</label><input type="date" id="newSSubUntil" placeholder="تاریخ میلادی"></div>
       </div>
       <div style="display:flex;gap:9px">
         <button class="btn btn-outline" onclick="genCode()">🔀 کد تصادفی</button>
@@ -513,7 +514,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
     <div class="card">
       <div class="card-title" style="margin-bottom:14px"><div class="ibox ib-cyan">📅</div>اطلاعات روز</div>
       <div class="form-grid">
-        <div class="form-group"><label>تاریخ</label><input type="date" id="sDate"></div>
+        <div class="form-group">
+          <label>تاریخ امروز</label>
+          <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:10px 13px;font-size:13px;color:var(--accent2);font-weight:700" id="sDateDisplay">—</div>
+          <input type="hidden" id="sDate">
+        </div>
         <div class="form-group"><label>وضعیت کلی روز</label><select id="sMood"><option value="great">🔥 خیلی خوب</option><option value="good" selected>😊 خوب</option><option value="ok">😐 معمولی</option><option value="bad">😞 بد</option></select></div>
       </div>
     </div>
@@ -557,7 +562,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
       <div class="form-grid" style="margin-bottom:12px">
         <div class="form-group"><label>نام آزمون</label><input type="text" id="sExamName" placeholder="مثلاً: گزینه دو — مرحله ۳"></div>
         <div class="form-group"><label>نوع آزمون</label><select id="sExamType"><option>آزمایشی</option><option>جامع</option><option>پیشرفت‌محور</option><option>شبیه‌ساز کنکور</option><option>مرحله‌ای</option></select></div>
-        <div class="form-group"><label>تاریخ آزمون</label><input type="date" id="sExamDate"></div>
+        <div class="form-group"><label>تاریخ آزمون</label>
+          <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:10px 13px;font-size:13px;color:var(--accent2);font-weight:700" id="sExamDateDisplay">—</div>
+          <input type="hidden" id="sExamDate">
+        </div>
         <div class="form-group"><label>تراز</label><input type="number" id="sExamTaraz" placeholder="مثلاً: 6840"></div>
         <div class="form-group"><label>رتبه در آزمون</label><input type="number" id="sExamRank" placeholder="مثلاً: 125"></div>
       </div>
@@ -594,7 +602,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 const SUPABASE_URL='https://ngvgtwbkkqalmzvnscns.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ndmd0d2Jra3FhbG16dm5zY25zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMDgzMjMsImV4cCI6MjA4Nzc4NDMyM30.N8MtsytKHNivrMjp1w9I_pfdy1bUYblz3rezRtkQkRM';
 const ADVISOR_PASSWORD='mahdi1234';
-const SUBJECTS=['زیست‌شناسی','شیمی','فیزیک','ریاضی','ادبیات','عربی','دین و زندگی','زبان انگلیسی'];
+const SUBJECTS_TAJROBI=['زیست‌شناسی','فیزیک','شیمی','ریاضی','زمین‌شناسی','ادبیات','دین و زندگی','عربی','زبان انگلیسی'];
+const SUBJECTS_RIAZI=['حسابان','گسسته','هندسه','آمار و احتمال','فیزیک','شیمی','ادبیات','دین و زندگی','عربی','زبان انگلیسی'];
+const SUBJECTS_DEFAULT=['ادبیات','دین و زندگی','عربی','زبان انگلیسی','ریاضی','فیزیک','شیمی'];
+function getSubjects(field){
+  if(!field)return SUBJECTS_DEFAULT;
+  if(field==='تجربی'||field.includes('تجربی'))return SUBJECTS_TAJROBI;
+  if(field==='ریاضی'||field.includes('ریاضی'))return SUBJECTS_RIAZI;
+  return SUBJECTS_DEFAULT;
+}
 const QUOTES=['هر روز یه قدم به رویات نزدیک‌تر میشی 🌟','مداومت کلید موفقیته. امروز هم بدرخش ✨','کنکور داره نزدیک میشه. این لحظات طلاییه 🏆','هر تستی که میزنی یه سنگ رو جاده پیشرفته 🪨','رتبه ۶۳ مهدی نشون داد که با برنامه همه چیز ممکنه 💪','امروز سخت بخون، فردا راحت بخواب 😴','تو لایق بهترینی، فقط ادامه بده 💜'];
 
 const {createClient}=supabase;
@@ -661,9 +677,10 @@ function gregorianToJalaliStr(dateStr){
   return jalaliStr(j.y,j.m,j.d);
 }
 
-// Konkur dates (approximate Gregorian)
-const TAJROBI_DATE=new Date('2025-06-22'); // خرداد ۱۴۰۴
-const RIAZI_DATE=new Date('2025-06-19');
+// تاریخ کنکور ۱۴۰۵ — ۱۲ تیر تجربی، ۱۱ تیر ریاضی
+// تبدیل شمسی به میلادی: ۱۱ تیر ۱۴۰۵ = 2026-07-02 ، ۱۲ تیر ۱۴۰۵ = 2026-07-03
+const TAJROBI_DATE=new Date('2026-07-03'); // ۱۲ تیر ۱۴۰۵
+const RIAZI_DATE=new Date('2026-07-02');   // ۱۱ تیر ۱۴۰۵
 
 function daysUntil(targetDate){
   const now=new Date();
@@ -789,27 +806,34 @@ async function addStudent(){
   const code=document.getElementById('newSCode').value.trim().toUpperCase();
   const grade=document.getElementById('newSGrade').value;
   const field=document.getElementById('newSField').value;
+  const subUntilInput=document.getElementById('newSSubUntil').value;
   if(!name||!code){showToast('اسم و کد را وارد کنید','warn');return;}
   if(cachedStudents.find(s=>s.code===code)){showToast('این کد قبلاً استفاده شده','warn');return;}
   showLoading('در حال ثبت...');
-  // default sub: 30 days from now
-  const subUntil=new Date();subUntil.setDate(subUntil.getDate()+30);
-  const{error}=await db.from('students').insert({name,code,grade,field,sub_until:subUntil.toISOString().split('T')[0]});
+  const{error}=await db.from('students').insert({name,code,grade,field,sub_until:subUntilInput||null});
   if(error){hideLoading();showToast('خطا: '+error.message,'warn');return;}
-  document.getElementById('newSName').value='';document.getElementById('newSCode').value='';
+  document.getElementById('newSName').value='';document.getElementById('newSCode').value='';document.getElementById('newSSubUntil').value='';
   await refreshAll();hideLoading();showToast(`${name} اضافه شد ✅`);
 }
 
-async function renewSubscription(code,days){
+async function renewSubscription(code,days,exactDate){
   const student=cachedStudents.find(s=>s.code===code);
   if(!student)return;
-  let base=new Date();
-  if(student.sub_until&&!isSubExpired(student))base=new Date(student.sub_until);
-  base.setDate(base.getDate()+parseInt(days));
+  let newDate;
+  if(exactDate){
+    newDate=exactDate;
+  } else {
+    if(!days||days<1){showToast('تعداد روز را وارد کنید','warn');return;}
+    let base=new Date();
+    if(student.sub_until&&!isSubExpired(student))base=new Date(student.sub_until);
+    base.setDate(base.getDate()+parseInt(days));
+    newDate=base.toISOString().split('T')[0];
+  }
   showLoading('در حال تمدید...');
-  await db.from('students').update({sub_until:base.toISOString().split('T')[0]}).eq('code',code);
+  await db.from('students').update({sub_until:newDate}).eq('code',code);
   await refreshAll();hideLoading();
-  showToast(`اشتراک ${student.name} تمدید شد ✅`);
+  const jD=toJalali(...newDate.split('-'));
+  showToast(`اشتراک ${student.name} تا ${jalaliStr(jD.y,jD.m,jD.d)} تمدید شد ✅`);
   closeModal('studentModal');openStudentModal(code);
 }
 
@@ -893,7 +917,12 @@ async function initStudentApp(){
   document.getElementById('sLogoIcon').textContent=currentStudent.name.charAt(0);
   document.getElementById('sDate').valueAsDate=new Date();
   document.getElementById('sQuote').innerHTML='💡 '+QUOTES[Math.floor(Math.random()*QUOTES.length)];
-  document.getElementById('sExamDate')&&(document.getElementById('sExamDate').valueAsDate=new Date());
+  // تاریخ امروز به شمسی
+  const todayISO=new Date().toISOString().split('T')[0];
+  document.getElementById('sDate').value=todayISO;
+  document.getElementById('sDateDisplay').textContent='📅 '+gregorianToJalaliStr(todayISO);
+  const examDateEl=document.getElementById('sExamDate');
+  if(examDateEl){examDateEl.value=todayISO;document.getElementById('sExamDateDisplay').textContent='📅 '+gregorianToJalaliStr(todayISO);}
   buildSExamSubjGrid();
   sRenderHome();
   sAddLesson();sAddLesson();
@@ -962,12 +991,21 @@ function sRenderHome(){
 
 function sAddLesson(){
   sLessonCount++;const id='sl'+sLessonCount;
+  const subjects=getSubjects(currentStudent?.field);
   const div=document.createElement('div');div.className='lesson-row';div.id=id;
   div.innerHTML=`<button class="rm-btn" onclick="sRemoveLesson('${id}')">✕</button>
     <div class="lesson-top">
-      <div class="form-group"><label>نام درس</label><select class="ls-name">${SUBJECTS.map(s=>`<option>${s}</option>`).join('')}</select></div>
+      <div class="form-group"><label>نام درس</label>
+        <select class="ls-name">
+          ${subjects.map(s=>`<option>${s}</option>`).join('')}
+          <option value="__custom__">✏️ درس دیگه...</option>
+        </select>
+      </div>
       <div class="form-group"><label>نوع</label><select class="ls-type" onchange="sToggleType(this,'${id}')"><option value="study">📖 مطالعه</option><option value="test">🎯 تست</option><option value="both">📖+🎯 هر دو</option></select></div>
       <div class="form-group"><label>دقیقه</label><input type="number" class="ls-mins" min="0" placeholder="۰" oninput="sUpdateSummary()"></div>
+    </div>
+    <div class="lesson-custom" id="lcustom-${id}" style="display:none;margin-bottom:9px">
+      <div class="form-group"><label>اسم درس دلخواه</label><input type="text" class="ls-custom-name" placeholder="اسم درس رو بنویس"></div>
     </div>
     <div class="lesson-bot" id="lbot-${id}" style="display:none">
       <div class="form-group"><label>تعداد تست</label><input type="number" class="ls-total" min="0" placeholder="۰" oninput="sUpdateSummary()"></div>
@@ -976,7 +1014,13 @@ function sAddLesson(){
       <div class="form-group"><label>⬜ نزده</label><input type="number" class="ls-skip" min="0" placeholder="۰" oninput="sUpdateSummary()"></div>
     </div>
     <div class="form-group lesson-note"><label>💬 توضیحات این درس</label><input type="text" class="ls-note" placeholder="مثلاً: فصل ۳ رو تموم کردم، هنوز با مبحث x مشکل دارم"></div>`;
-  document.getElementById('sLessonsContainer').appendChild(div);sUpdateSummary();
+  document.getElementById('sLessonsContainer').appendChild(div);
+  // listen for custom subject select
+  div.querySelector('.ls-name').addEventListener('change',function(){
+    const c=document.getElementById('lcustom-'+id);
+    if(c)c.style.display=this.value==='__custom__'?'block':'none';
+  });
+  sUpdateSummary();
 }
 
 function sRemoveLesson(id){document.getElementById(id)?.remove();sUpdateSummary();}
@@ -1002,8 +1046,12 @@ async function sSubmitReport(){
     const wrong=parseInt(row.querySelector('.ls-wrong')?.value||0);
     const skip=parseInt(row.querySelector('.ls-skip')?.value||0);
     const note=row.querySelector('.ls-note')?.value||'';
+    const nameEl=row.querySelector('.ls-name');
+    const rawName=nameEl.value;
+    const customName=row.querySelector('.ls-custom-name')?.value?.trim();
+    const lessonName=rawName==='__custom__'?(customName||'درس دیگر'):rawName;
     tm+=mins;tt+=total;
-    lessons.push({name:row.querySelector('.ls-name').value,type:row.querySelector('.ls-type').value,mins,total,correct,wrong,skip,note});
+    lessons.push({name:lessonName,type:row.querySelector('.ls-type').value,mins,total,correct,wrong,skip,note});
   });
   const btn=document.getElementById('sSubmitBtn');btn.disabled=true;btn.textContent='در حال ثبت...';
   const{error}=await db.from('reports').insert({student_code:currentStudent.code,student_name:currentStudent.name,date,mood:document.getElementById('sMood').value,lessons:JSON.stringify(lessons),total_mins:tm,total_tests:tt,satisfaction:parseInt(document.getElementById('sSatS').value),notes:document.getElementById('sNotes').value});
@@ -1012,7 +1060,10 @@ async function sSubmitReport(){
   const{data}=await db.from('reports').select('*').eq('student_code',currentStudent.code).order('created_at',{ascending:false});
   cachedReports=data||[];
   showToast('گزارش امروزت ثبت شد ✅');
-  document.getElementById('sDate').valueAsDate=new Date();document.getElementById('sNotes').value='';document.getElementById('sSatS').value=70;sUpdateSat(70);
+  const newToday=new Date().toISOString().split('T')[0];
+  document.getElementById('sDate').value=newToday;
+  document.getElementById('sDateDisplay').textContent='📅 '+gregorianToJalaliStr(newToday);
+  document.getElementById('sNotes').value='';document.getElementById('sSatS').value=70;sUpdateSat(70);
   document.getElementById('sLessonsContainer').innerHTML='';sLessonCount=0;sAddLesson();sAddLesson();sUpdateSummary();
 }
 
@@ -1030,7 +1081,8 @@ function sRenderHistory(){
 // STUDENT EXAMS
 function buildSExamSubjGrid(){
   const g=document.getElementById('sExamSubjGrid');if(!g)return;
-  g.innerHTML=SUBJECTS.map(s=>`<div class="form-group"><label>${s}</label><input type="number" class="s-exam-sp" data-s="${s}" min="0" max="100" placeholder="درصد"></div>`).join('');
+  const subjects=getSubjects(currentStudent?.field);
+  g.innerHTML=subjects.map(s=>`<div class="form-group"><label>${s}</label><input type="number" class="s-exam-sp" data-s="${s}" min="0" max="100" placeholder="درصد"></div>`).join('');
 }
 
 async function sAddExam(){
@@ -1172,11 +1224,21 @@ function openStudentModal(code){
       ${jSub?`<div style="font-size:11px;color:var(--text-muted)">تاریخ انقضا: ${jalaliStr(jSub.y,jSub.m,jSub.d)}</div>`:''}
     </div>
     <div style="font-size:12px;font-weight:700;color:var(--text-dim);margin-bottom:8px">🔄 تمدید اشتراک:</div>
-    <div class="renew-box">
-      <input type="number" id="renewDays" placeholder="تعداد روز" min="1" value="30" style="width:100px;text-align:center">
-      <button class="btn btn-gold" onclick="renewSubscription('${s.code}',document.getElementById('renewDays').value)">💰 تمدید</button>
-      <button class="btn btn-success btn-sm" onclick="document.getElementById('renewDays').value=30">۳۰ روز</button>
-      <button class="btn btn-success btn-sm" onclick="document.getElementById('renewDays').value=7">۷ روز</button>
+    <div class="renew-box" style="flex-direction:column;align-items:stretch;gap:10px">
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="form-group" style="flex:1;margin:0"><label>تعداد روز اضافه</label><input type="number" id="renewDays" placeholder="مثلاً: 30" min="1" value="30" style="text-align:center"></div>
+        <button class="btn btn-gold" style="margin-top:16px" onclick="renewSubscription('${s.code}',document.getElementById('renewDays').value,null)">➕ تمدید</button>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);text-align:center">— یا —</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="form-group" style="flex:1;margin:0"><label>تاریخ دقیق انقضا (میلادی)</label><input type="date" id="renewDate"></div>
+        <button class="btn btn-success" style="margin-top:16px" onclick="renewSubscription('${s.code}',null,document.getElementById('renewDate').value)">📅 ثبت</button>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('renewDays').value=7">+۷ روز</button>
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('renewDays').value=30">+۳۰ روز</button>
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('renewDays').value=90">+۳ ماه</button>
+      </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0">
       <div class="sum-card"><div class="sum-val c-purple" style="font-size:18px">${toPNum(sr.length)}</div><div class="sum-lbl">گزارش</div></div>
